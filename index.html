@@ -22,22 +22,23 @@
                 <input type="text" name="lname" id="lname" placeholder="Last Name" required>
                 <label for="lname">Enter Last Name</label>
             </div>
-              <!-- Email -->
-                 <div class="input-group">
-                <i class="fas fa-envelope"></i>
-                <input type="email" id="email" placeholder="E-mail" required>
-                 <label for="email">Enter E-mail Address</label>
-            </div>
+             
                <!-- Select Role -->
                   <div class="input-group">
                 <i class="fas fa-caret-down"></i>
-                <select id="role" name="Role">
+                <select id="role" name="Role" >
                     <option value="student">Student</option>
                     <option value="lec">Lecturer</option>
                     <option value="courseadmin">Course Administrator</option>
                     <option value="systemadmin">System Administrator</option>
                 </select>
                  <label for="role">Select Role</label>
+            </div>
+             <!-- Email -->
+                 <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" placeholder="E-mail" required>
+                 <label for="email">Enter E-mail Address</label>
             </div>
              <!-- Password -->
                  <div class="input-group">
@@ -57,8 +58,11 @@
         
         </form>
         <div class="links">
+            
              <p>Already have an account? </p>
-             <button id="signin">Sign in</button>
+             <a href="signin.html">
+             <button id="signin">  Sign in </button>
+        </a>
         </div>
     </div>
 
