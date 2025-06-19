@@ -1,0 +1,114 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:"poppins",sans-serif; 
+}
+body{
+    background-color: rgb(235, 202, 163);
+    background:linear-gradient(to right,#e5e2e2 ,#cbb5e4)
+}
+.container{
+    background:#fff;
+    width:450px;
+    padding: 1.5rem;
+    margin:50px auto;
+    border-radius:10px;
+    box-shadow:0 20px 35px rgba(0,0,1,0.9);
+   position: relative;
+}
+form{
+    margin:0 2rem;
+   
+}
+.form-title{
+    font-size: 1.5rem;
+    font-weight:bold;
+    text-align:center;
+    padding:1.3rem;
+    margin-bottom:0.4rem;
+}
+input{
+    color: inherit;
+    width: 100%;
+    background-color: transparent;
+    border:none;
+    border-bottom:1px solid #757575;
+    padding-left: 1.5rem;
+
+}
+.input-group{
+    position:relative;
+    padding:1% 0;
+}
+.input-group i{
+    position:absolute;
+    color: black;
+}
+input:focus{
+    background-color:rgb(238, 236, 233);
+    outline: transparent;
+    border-bottom:2px solid hsl(315, 2%, 54%);
+}
+input::placeholder{
+    color:transparent;
+}
+label{
+    color:#a1a0a3;
+    position:relative;
+    left:1.2em;
+    top:-1.3em;
+    cursor:auto;
+    transition:0.3s ease all;
+    text-align: center;
+    font-size: 0.9rem;
+
+}
+.input-group select{
+    padding: 1% 1%;
+   margin-left: 1.5rem;
+   margin-right: -1.3rem;
+   padding: bottom 2px;
+ 
+}
+input:focus~label,input:not(:placeholder-shown)~label{
+    top:-3em;
+    color:hsl(310, 8%, 42%);
+    font-size:12px;
+}
+.button{
+    font-size:1rem;
+    padding:7px 0;
+    border: radius 4px;
+    outline:none;
+    border:none;
+    width:100%;
+    background:rgb(169, 131, 172);
+    color:white;
+    cursor:auto;
+    transition: 0.3s;
+
+}
+.button:hover{
+    background:#ad98f1;
+
+}
+.links{
+    display:flex;
+    justify-content:space-around;
+    padding: 0 4rem;
+    margin-top:0.9rem;
+    font-weight:bold;
+}
+button{
+    color:rgb(169, 131, 172);
+    border:none;
+    background-color: transparent;
+    font-size: 1rem;
+    font-weight:bold;
+
+}
+button:hover{
+    text-decoration:underline;
+    color:blue;
+}
