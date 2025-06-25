@@ -1,0 +1,60 @@
+<!-- 
+<?php
+include ("include/dbconnect.php");
+if (session_status() === PHP_SESSION_NONE) {
+    session_start(); // Start session only if not already started
+}
+?>
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dahboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+   <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+   
+   
+        <nav>
+        <div class="navigation">
+            <div class="nav-left">
+            <ul>
+            <li><a href="studentdash.html"> Dashboard </a></li>
+           <li> <a href="about.html"> About </a></li>
+           <li> <a href="select.html"> Submit </a></li>
+           </ul>
+           </div>
+          <div class="profile" id="profileArea">
+      <div class="profile-icon" id="profileIcon"></div>
+      <div class="dropdown" id="dropdownMenu">
+        <a href="logout.php">Log Out</a>
+      </div>
+    </div>
+  </nav>
+
+  <script>
+    const profileIcon = document.getElementById("profileIcon");
+    const dropdownMenu = document.getElementById("dropdownMenu");
+    const profileArea = document.getElementById("profileArea");
+
+    profileIcon.addEventListener("click", () => {
+      dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", function(event) {
+      if (!profileArea.contains(event.target)) {
+        dropdownMenu.style.display = "none";
+      }
+    });
+  </script>
+        </nav>
+        <div class="banner">
+            <h1>WELCOME STUDENT</h1>
+        </div>
+       
+</body>
+</html>

@@ -1,0 +1,117 @@
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: rgb(235, 202, 163);
+  background: linear-gradient(to right, #e0edee, #fbe4fc);
+}
+
+/* Navigation Bar */
+.navigation {
+  background-color: #f5f6f7;
+  margin: 2px;
+  padding: 20px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Navigation Links */
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 27px;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li {
+  display: inline;
+}
+
+nav ul li a {
+  color: black;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+
+nav ul li a:hover {
+  color: #8c3b83;
+}
+
+/* Banner Section */
+.banner {
+  background-color: #bebcbe;
+  background: linear-gradient(to right, #e0edee, #f7c1f2);
+  padding: 20px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: fantasy;
+}
+
+/* Profile Dropdown */
+.profile {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: white;
+  background-image: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png');
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dropdown Menu */
+.dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 45px;
+  background-color: white;
+  color: black;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  min-width: 120px;
+  z-index: 100;
+}
+
+.dropdown a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.dropdown a:hover {
+  background-color: #f0f0f0;
+}
+
+/* Toggle Dropdown on Click */
+#dropdownToggle {
+  display: none;
+}
+
+#dropdownToggle:checked + .profile-icon + .dropdown {
+  display: block;
+}
+
+/* Hide native checkbox */
+.profile input[type="checkbox"] {
+  display: none;
+}

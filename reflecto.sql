@@ -1,91 +1,266 @@
-DROP DATABASE IF EXISTS `reflecto` ;
-CREATE DATABASE reflecto ;
-USE reflecto ;
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Jun 19, 2025 at 04:26 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.0.30
 
-DROP TABLE IF EXISTS `faculty` ;
-CREATE TABLE `faculty`(
-faculty_id INT AUTO_INCREMENT PRIMARY KEY,
-faculty_name VARCHAR(100),
-course_name VARCHAR(100)
-);
-DROP TABLE IF EXISTS `course` ;
-CREATE TABLE `course`(
-course_id INT AUTO_INCREMENT PRIMARY KEY,
-course_name VARCHAR(100),
-faculty_name VARCHAR(100),
-faculty_id INT,
-FOREIGN KEY(faculty_id) REFERENCES faculty(faculty_id)
-);
-
-DROP TABLE IF EXISTS `courseAdmin` ;
-CREATE TABLE `courseAdmin`(
-course_admin_id INT AUTO_INCREMENT PRIMARY KEY,
-course_admin_name VARCHAR(100),
-email VARCHAR(100) UNIQUE NOT NULL,
-faculty_name VARCHAR(100),
-password VARCHAR(255) NOT NULL,
-faculty_id INT,
-FOREIGN KEY(faculty_id) REFERENCES faculty(faculty_id)
-);
-
-DROP TABLE IF EXISTS `users` ;
-CREATE TABLE `users`(
-user_id INT AUTO_INCREMENT PRIMARY KEY,
-email VARCHAR(100) UNIQUE NOT NULL,
-password VARCHAR(255) NOT NULL,
-role INT NOT NULL -- 1=student, 2=lecturer, 3=systemadmin, 4=courseadmin--
-);
-
-DROP TABLE IF EXISTS `students` ;
-CREATE TABLE `students`(
-student_id INT AUTO_INCREMENT PRIMARY KEY,
-student_name VARCHAR(100),
-email VARCHAR(100) UNIQUE NOT NULL,
-faculty_name VARCHAR(100),
-student_course VARCHAR(100),
-year_of_study INT NOT NULL,
-password VARCHAR(255) NOT NULL,
-faculty_id INT,
-FOREIGN KEY(faculty_id) REFERENCES faculty(faculty_id)
-);
-
-DROP TABLE IF EXISTS `lecturers` ;
-CREATE TABLE `lecturers`(
-lecturer_id INT AUTO_INCREMENT PRIMARY KEY,
-lecturer_name VARCHAR(100),
-email VARCHAR(100) UNIQUE NOT NULL,
-faculty_name VARCHAR(100),
-course_taught VARCHAR(100),
-password VARCHAR(255) NOT NULL,
-faculty_id INT,
-FOREIGN KEY(faculty_id) REFERENCES faculty(faculty_id)
-);
-
-DROP TABLE IF EXISTS `systemAdmin` ;
-CREATE TABLE `systemAdmin`(
-system_admin_id INT AUTO_INCREMENT PRIMARY KEY,
-system_admin_name VARCHAR(100),
-email VARCHAR(100) UNIQUE NOT NULL,
-password VARCHAR(255) NOT NULL
-);
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
 
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
+--
+-- Database: `reflecto`
+--
 
-DROP TABLE IF EXISTS `form` ;
-CREATE TABLE `form`(
-form_id INT AUTO_INCREMENT PRIMARY KEY,
-is_anonymous BOOLEAN,
-message VARCHAR(500),
-Times TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-profanity_filter BOOLEAN, --1 if profanity is found, 0 otherwise--
-sentiment_score VARCHAR(50), --'POSITIVE', 'NEUTRAL', 'NEGATIVE'--
-course_id INT,
-student_id INT,
-lecturer_id INT,
-system_admin_id INT,
-FOREIGN KEY (course_id) REFERENCES course(course_id),
-FOREIGN KEY (student_id) REFERENCES students(student_id),
-FOREIGN KEY (lecturer_id) REFERENCES lecturers(lecturer_id),
-FOREIGN KEY (system_admin_id) REFERENCES systemAdmin(admin_id)
-);
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `course`
+--
+
+CREATE TABLE `course` (
+  `course_id` int(11) NOT NULL,
+  `course_name` varchar(100) DEFAULT NULL,
+  `faculty_name` varchar(100) DEFAULT NULL,
+  `faculty_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `courseadmin`
+--
+
+CREATE TABLE `courseadmin` (
+  `course_admin_id` int(11) NOT NULL,
+  `course_admin_name` varchar(100) DEFAULT NULL,
+  `email` varchar(100) NOT NULL,
+  `faculty_name` varchar(100) DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `faculty_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `faculty`
+--
+
+CREATE TABLE `faculty` (
+  `faculty_id` int(11) NOT NULL,
+  `faculty_name` varchar(100) DEFAULT NULL,
+  `course_name` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lecturers`
+--
+
+CREATE TABLE `lecturers` (
+  `lecturer_id` int(11) NOT NULL,
+  `lecturer_name` varchar(100) DEFAULT NULL,
+  `email` varchar(100) NOT NULL,
+  `faculty_name` varchar(100) DEFAULT NULL,
+  `course_taught` varchar(100) DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `faculty_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `students`
+--
+
+CREATE TABLE `students` (
+  `student_id` int(11) NOT NULL,
+  `student_name` varchar(100) DEFAULT NULL,
+  `email` varchar(100) NOT NULL,
+  `faculty_name` varchar(100) DEFAULT NULL,
+  `student_course` varchar(100) DEFAULT NULL,
+  `year_of_study` int(11) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `faculty_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `systemadmin`
+--
+
+CREATE TABLE `systemadmin` (
+  `system_admin_id` int(11) NOT NULL,
+  `system_admin_name` varchar(100) DEFAULT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL,
+  `firstName` varchar(255) NOT NULL,
+  `lastName` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `firstName`, `lastName`, `email`, `password`, `role`) VALUES
+(1, 'Jane ', 'Doe', 'example@gmail.com', '$2y$10$xg5m3r8J9IQHGVprvp66Nu4E7UAq1/m8Vs.WBLcHBjoisUsILYwXO', 1),
+(2, 'Amina', 'Hassan', 'example2@gmail.com', '$2y$10$V5kWz39CZB6AaN90r1vtaeKUpe5blEcu04PUN2sCXa5Y/jcqDYEPC', 2),
+(3, 'Mellisa', 'James', 'mlissa@gmail.com', '$2y$10$wO71VcVcEpZA3SpTi3FoOuqgDfyzRn2EAlH1oAt0GtVjGVcgSNdLG', 1);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `course`
+--
+ALTER TABLE `course`
+  ADD PRIMARY KEY (`course_id`),
+  ADD KEY `faculty_id` (`faculty_id`);
+
+--
+-- Indexes for table `courseadmin`
+--
+ALTER TABLE `courseadmin`
+  ADD PRIMARY KEY (`course_admin_id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `faculty_id` (`faculty_id`);
+
+--
+-- Indexes for table `faculty`
+--
+ALTER TABLE `faculty`
+  ADD PRIMARY KEY (`faculty_id`);
+
+--
+-- Indexes for table `lecturers`
+--
+ALTER TABLE `lecturers`
+  ADD PRIMARY KEY (`lecturer_id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `faculty_id` (`faculty_id`);
+
+--
+-- Indexes for table `students`
+--
+ALTER TABLE `students`
+  ADD PRIMARY KEY (`student_id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `faculty_id` (`faculty_id`);
+
+--
+-- Indexes for table `systemadmin`
+--
+ALTER TABLE `systemadmin`
+  ADD PRIMARY KEY (`system_admin_id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `course`
+--
+ALTER TABLE `course`
+  MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `courseadmin`
+--
+ALTER TABLE `courseadmin`
+  MODIFY `course_admin_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `faculty`
+--
+ALTER TABLE `faculty`
+  MODIFY `faculty_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `lecturers`
+--
+ALTER TABLE `lecturers`
+  MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `students`
+--
+ALTER TABLE `students`
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `systemadmin`
+--
+ALTER TABLE `systemadmin`
+  MODIFY `system_admin_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `course`
+--
+ALTER TABLE `course`
+  ADD CONSTRAINT `course_ibfk_1` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`);
+
+--
+-- Constraints for table `courseadmin`
+--
+ALTER TABLE `courseadmin`
+  ADD CONSTRAINT `courseadmin_ibfk_1` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`);
+
+--
+-- Constraints for table `lecturers`
+--
+ALTER TABLE `lecturers`
+  ADD CONSTRAINT `lecturers_ibfk_1` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`);
+
+--
+-- Constraints for table `students`
+--
+ALTER TABLE `students`
+  ADD CONSTRAINT `students_ibfk_1` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
