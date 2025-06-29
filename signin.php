@@ -26,7 +26,7 @@
                  <label for="password">Enter Password</label>
             </div>
             <!--Submit button -->
-            <a href="dashboard.html">
+            <a href="test.php">
             <button type="submit" name="signin">Sign In</button>
         </a>
         </form>

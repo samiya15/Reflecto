@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 19, 2025 at 04:26 PM
+-- Generation Time: Jun 29, 2025 at 11:05 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -85,13 +85,16 @@ CREATE TABLE `lecturers` (
 
 CREATE TABLE `students` (
   `student_id` int(11) NOT NULL,
-  `student_name` varchar(100) DEFAULT NULL,
+  `user_id` int(11) NOT NULL,
+  `first_name` varchar(150) NOT NULL,
+  `last_name` varchar(150) NOT NULL,
   `email` varchar(100) NOT NULL,
   `faculty_name` varchar(100) DEFAULT NULL,
   `student_course` varchar(100) DEFAULT NULL,
   `year_of_study` int(11) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `faculty_id` int(11) DEFAULT NULL
+  `faculty_id` int(11) DEFAULT NULL,
+  `profile_photo` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -129,7 +132,9 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`user_id`, `firstName`, `lastName`, `email`, `password`, `role`) VALUES
 (1, 'Jane ', 'Doe', 'example@gmail.com', '$2y$10$xg5m3r8J9IQHGVprvp66Nu4E7UAq1/m8Vs.WBLcHBjoisUsILYwXO', 1),
 (2, 'Amina', 'Hassan', 'example2@gmail.com', '$2y$10$V5kWz39CZB6AaN90r1vtaeKUpe5blEcu04PUN2sCXa5Y/jcqDYEPC', 2),
-(3, 'Mellisa', 'James', 'mlissa@gmail.com', '$2y$10$wO71VcVcEpZA3SpTi3FoOuqgDfyzRn2EAlH1oAt0GtVjGVcgSNdLG', 1);
+(3, 'Mellisa', 'James', 'mlissa@gmail.com', '$2y$10$wO71VcVcEpZA3SpTi3FoOuqgDfyzRn2EAlH1oAt0GtVjGVcgSNdLG', 1),
+(4, 'example', 'three', 'example3@gmail.com', '$2y$10$0pn.0AwxfAwUeGX/0VRE6.eIELDkoWfZejhB.YkvlOiystKb4DhxS', 1),
+(5, 'ejany', 'jane', 'ej@gmail.com', '$2y$10$ibwvSP0i2V5SWsOwMX7.tuIaD4CwJtU8XeL5zdz9LfwOmXchCPbUa', 3);
 
 --
 -- Indexes for dumped tables
@@ -161,14 +166,6 @@ ALTER TABLE `faculty`
 --
 ALTER TABLE `lecturers`
   ADD PRIMARY KEY (`lecturer_id`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD KEY `faculty_id` (`faculty_id`);
-
---
--- Indexes for table `students`
---
-ALTER TABLE `students`
-  ADD PRIMARY KEY (`student_id`),
   ADD UNIQUE KEY `email` (`email`),
   ADD KEY `faculty_id` (`faculty_id`);
 
@@ -215,12 +212,6 @@ ALTER TABLE `lecturers`
   MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `students`
---
-ALTER TABLE `students`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `systemadmin`
 --
 ALTER TABLE `systemadmin`
@@ -230,7 +221,7 @@ ALTER TABLE `systemadmin`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
@@ -253,12 +244,6 @@ ALTER TABLE `courseadmin`
 --
 ALTER TABLE `lecturers`
   ADD CONSTRAINT `lecturers_ibfk_1` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`);
-
---
--- Constraints for table `students`
---
-ALTER TABLE `students`
-  ADD CONSTRAINT `students_ibfk_1` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

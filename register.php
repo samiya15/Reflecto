@@ -83,6 +83,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (password_verify($password, $row['password'])) {
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['role'] = $row['role'];
+                $_SESSION['user_id'] = $row['user_id'];
+
 
                 // Redirect based on role
                 switch ($row['role']) {

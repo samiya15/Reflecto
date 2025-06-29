@@ -1,29 +1,37 @@
-body {
+* {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(to right, #e0edee, #fbe4fc);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
 
+/* Body background */
+body {
+  background: linear-gradient(to right, #e0edee, #fbe4fc);
+}
+
+/* Card styling */
 .card {
-  background-color: white;
+  max-width: 800px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 20px;
+}
+
+/* Profile section container */
+.profile-section {
   display: flex;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  width: 800px;
+  align-items: flex-start;
   gap: 30px;
 }
 
-/* Profile Section */
-.profile-section {
+/* Profile picture and upload */
+.profile-picture {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 30%;
 }
 
 .profile-picture img {
@@ -31,60 +39,47 @@ body {
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #aaa;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .upload-btn {
-  background-color: #8c3b83;
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #333;
   color: white;
-  padding: 8px 15px;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
-  text-align: center;
-  transition: background-color 0.2s ease;
+  font-size: 14px;
 }
 
-.upload-btn:hover {
-  background-color: #a54da1;
-}
-
-/* Form Section */
+/* Form fields */
 .form-section {
-  flex-grow: 1;
+  flex: 1;
 }
 
-form .input-group {
-  display: flex;
-  flex-direction: column;
+.input-group {
   margin-bottom: 15px;
 }
 
-form .input-group label {
+.input-group label {
+  display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  color: #333;
 }
 
-form .input-group input {
-  padding: 10px;
+.input-group input {
+  width: 100%;
+  padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
+  border-radius: 4px;
 }
 
 .submit-btn {
-  background-color: #3b82f6;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #333;
   color: white;
-  padding: 10px 18px;
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.submit-btn:hover {
-  background-color: #2563eb;
 }

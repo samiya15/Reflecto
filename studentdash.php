@@ -1,16 +1,11 @@
 <?php
-// Start session + DB connect
 session_start();
 include("include/dbconnect.php");
-
-// Check if user ID is set in session
 $user_id = $_SESSION['user_id'] ?? null;
 
-// Default: no student profile
 $student = null;
-
+//fetch the profile if its exists
 if ($user_id) {
-    // Fetch existing profile if logged in
     $query = $conn->prepare("SELECT * FROM students WHERE user_id = ?");
     $query->bind_param("i", $user_id);
     $query->execute();
@@ -25,14 +20,17 @@ if ($user_id) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Dashboard</title>
+  <!-- Font Awesome icons for profile icon -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <!-- This is your merged CSS with nav, banner, and card styles -->
   <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
 
-<!-- Navigation -->
+<!-- NAVIGATION BAR -->
 <nav>
   <div class="navigation">
+    <!-- Left side nav links -->
     <div class="nav-left">
       <ul>
         <li><a href="studentdash.php">Dashboard</a></li>
@@ -40,16 +38,17 @@ if ($user_id) {
         <li><a href="select.html">Submit</a></li>
       </ul>
     </div>
+    <!-- Profile icon and dropdown -->
     <div class="profile" id="profileArea">
       <div class="profile-icon" id="profileIcon"></div>
       <div class="dropdown" id="dropdownMenu">
-        <a href="logout.php">Log Out</a>
+        <a href="signin.php">Log Out</a>
       </div>
     </div>
   </div>
 </nav>
 
-<!-- Dropdown toggle script -->
+<!-- This script makes the dropdown open/close -->
 <script>
 const profileIcon = document.getElementById("profileIcon");
 const dropdownMenu = document.getElementById("dropdownMenu");
@@ -66,53 +65,61 @@ document.addEventListener("click", function(event) {
 });
 </script>
 
-<!-- Banner -->
+<!-- BANNER SECTION -->
 <div class="banner">
   <h1>WELCOME STUDENT</h1>
 </div>
 
-<!-- Profile Card -->
+<!-- CARD CONTAINER -->
 <div class="card">
   <div class="profile-section">
-
+    
+    <!-- Profile picture -->
     <div class="profile-picture">
-      <img src="<?= $student['profile_photo'] ?? 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' ?>" alt="Profile" />
-      <?php if (!$student): ?>
-        <input type="file" name="profile_photo" id="profileUpload" hidden>
-        <label for="profileUpload" class="upload-btn">Upload Profile</label>
-      <?php endif; ?>
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile" />
+      <!-- Upload button -->
+      <input type="file" name="profile_photo" id="profileUpload" hidden>
+      <label for="profileUpload" class="upload-btn">Upload Profile Photo</label>
     </div>
 
+    <!-- Form fields -->
     <div class="form-section">
       <?php if (!$student): ?>
-        <form method="POST" action="submit.php" enctype="multipart/form-data">
-          <div class="input-group">
-            <label>First Name</label>
-            <input type="text" name="first_name" required>
-          </div>
-          <div class="input-group">
-            <label>Last Name</label>
-            <input type="text" name="last_name" required>
-          </div>
-          <div class="input-group">
-            <label>Email</label>
-            <input type="email" name="email" required>
-          </div>
-          <div class="input-group">
-            <label>Faculty</label>
-            <input type="text" name="faculty_name" required>
-          </div>
-          <div class="input-group">
-            <label>Course</label>
-            <input type="text" name="student_course" required>
-          </div>
-          <div class="input-group">
-            <label>Year</label>
-            <input type="text" name="year_of_study" required>
-          </div>
-          <button type="submit" class="submit-btn">Save Student</button>
-        </form>
+        <h2>Create Your Profile</h2>
+      <form method="POST" action="submit.php" enctype="multipart/form-data">
+      
+      <div class="input-group">
+          <label>First Name</label>
+          <input type="text" name="first_name" required>
+        </div>
+
+        <div class="input-group">
+          <label>Last Name</label>
+          <input type="text" name="last_name" required>
+        </div>
+
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" name="email" required>
+        </div>
+
+        <div class="input-group">
+          <label>Faculty</label>
+          <input type="text" name="faculty_name" required>
+        </div>
+        <div class="input-group">
+          <label>Course</label>
+          <input type="text" name="student_course" required>
+        </div>
+        <div class="input-group">
+          <label>Year</label>
+          <input type="text" name="year_of_study" required>
+        </div>
+        <button type="submit" class="submit-btn">Save Profile</button>
+      </form>
+
       <?php else: ?>
+        <h2>Your Profile</h2>
         <div style="text-align:left;">
           <p><strong>Name:</strong> <?= htmlspecialchars($student['first_name']) ?> <?= htmlspecialchars($student['last_name']) ?></p>
           <p><strong>Email:</strong> <?= htmlspecialchars($student['email']) ?></p>
@@ -123,11 +130,11 @@ document.addEventListener("click", function(event) {
         <form method="GET" action="edit_profile.php">
           <button class="submit-btn" style="margin-top: 15px;">Update Information</button>
         </form>
-      <?php endif; ?>
+        <?php endif; ?>
     </div>
-
   </div>
 </div>
 
+</div>
 </body>
 </html>
