@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 29, 2025 at 11:05 PM
+-- Generation Time: Jun 30, 2025 at 01:55 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -20,6 +20,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `reflecto`
 --
+DROP DATABASE IF EXISTS `reflecto`;
+CREATE DATABASE IF NOT EXISTS `reflecto` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `reflecto`;
 
 -- --------------------------------------------------------
 
@@ -99,6 +102,14 @@ CREATE TABLE `students` (
   `profile_photo` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `students`
+--
+
+INSERT INTO `students` (`student_id`, `user_id`, `first_name`, `last_name`, `email`, `faculty_name`, `student_course`, `year_of_study`, `password`, `faculty_id`, `profile_photo`) VALUES
+(0, 6, 'try', 'one', 'try@gmail.com', 'SBS', 'BFS', 3, '', NULL, 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'),
+(0, 7, 'Fatuma', 'Ahmed', 'fatma@gmail.com', 'SCES', 'BBIT', 3, '', NULL, 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png');
+
 -- --------------------------------------------------------
 
 --
@@ -136,7 +147,9 @@ INSERT INTO `users` (`user_id`, `firstName`, `lastName`, `email`, `password`, `r
 (2, 'Amina', 'Hassan', 'example2@gmail.com', '$2y$10$V5kWz39CZB6AaN90r1vtaeKUpe5blEcu04PUN2sCXa5Y/jcqDYEPC', 2),
 (3, 'Mellisa', 'James', 'mlissa@gmail.com', '$2y$10$wO71VcVcEpZA3SpTi3FoOuqgDfyzRn2EAlH1oAt0GtVjGVcgSNdLG', 1),
 (4, 'example', 'three', 'example3@gmail.com', '$2y$10$0pn.0AwxfAwUeGX/0VRE6.eIELDkoWfZejhB.YkvlOiystKb4DhxS', 1),
-(5, 'ejany', 'jane', 'ej@gmail.com', '$2y$10$ibwvSP0i2V5SWsOwMX7.tuIaD4CwJtU8XeL5zdz9LfwOmXchCPbUa', 3);
+(5, 'ejany', 'jane', 'ej@gmail.com', '$2y$10$ibwvSP0i2V5SWsOwMX7.tuIaD4CwJtU8XeL5zdz9LfwOmXchCPbUa', 3),
+(6, 'try', 'one', 'try@gmail.com', '$2y$10$G59pL/PJGgNBGuyk6SKnqeXfKKwaEIGz5RKuz7zwQaeZwGaBmFT0i', 1),
+(7, 'Fatuma', 'Ahmed', 'fatma@gmail.com', '$2y$10$P/yrU.VtAx5nQQyFspVgGeuRHZmrhDMmwW4aRmRpTtvcWkz/DwJpW', 1);
 
 --
 -- Indexes for dumped tables
@@ -223,7 +236,7 @@ ALTER TABLE `systemadmin`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
