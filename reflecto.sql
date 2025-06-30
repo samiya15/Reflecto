@@ -23,10 +23,12 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
---
+
 -- Table structure for table `course`
 --
-
+DROP DATABASE IF EXISTS `reflecto`;
+CREATE DATABASE IF NOT EXISTS `reflecto` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `reflecto`;
 CREATE TABLE `course` (
   `course_id` int(11) NOT NULL,
   `course_name` varchar(100) DEFAULT NULL,
