@@ -85,6 +85,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['role'] = $row['role'];
                 $_SESSION['user_id'] = $row['user_id'];
 
+// If the user is a Course Admin, ensure their details are in courseadmin table
+if ($row['role'] == 3) {
+    // Check if courseadmin record exists
+    $checkAdmin = $conn->prepare("SELECT course_admin_id FROM courseadmin WHERE email = ?");
+    $checkAdmin->bind_param("s", $row['email']);
+    $checkAdmin->execute();
+    $adminResult = $checkAdmin->get_result();
+
+    if ($adminResult->num_rows === 0) {
+        // Insert the record from users table
+        $insertAdmin = $conn->prepare("INSERT INTO courseadmin (course_admin_name, email) VALUES (?, ?)");
+        $fullName = $row['firstName'] . ' ' . $row['lastName'];
+        $insertAdmin->bind_param("ss", $fullName, $row['email']);
+        $insertAdmin->execute();
+    }
+}
 
                 // Redirect based on role
                 switch ($row['role']) {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 30, 2025 at 11:07 PM
+-- Generation Time: Jul 02, 2025 at 07:31 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -20,7 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `reflecto`
 --
-DROP DATABASE IF EXISTS `reflecto`;
 CREATE DATABASE IF NOT EXISTS `reflecto` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `reflecto`;
 
@@ -70,6 +69,22 @@ CREATE TABLE `faculty` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `feedback`
+--
+
+DROP TABLE IF EXISTS `feedback`;
+CREATE TABLE `feedback` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `feedback_text` text NOT NULL,
+  `sentiment` varchar(20) DEFAULT NULL,
+  `has_profanity` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `lecturers`
 --
 
@@ -85,15 +100,16 @@ CREATE TABLE `lecturers` (
   `password` varchar(255) NOT NULL,
   `faculty_id` int(11) DEFAULT NULL,
   `profile_photo` varchar(255) DEFAULT NULL,
-  `unit_taught` varchar(255) DEFAULT NULL
+  `unit_taught` varchar(255) DEFAULT NULL,
+  `status` enum('pending','approved','rejected') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `lecturers`
 --
 
-INSERT INTO `lecturers` (`lecturer_id`, `user_id`, `first_name`, `last_name`, `email`, `faculty_name`, `course_taught`, `password`, `faculty_id`, `profile_photo`, `unit_taught`) VALUES
-(0, 8, 'Otieno', 'Mwithiki', 'mwioti@gmail.com', 'SCES', 'ICS', '', NULL, 'uploads/6862fbcf5ceb4_lec.jpeg', 'Probability and Statistics');
+INSERT INTO `lecturers` (`lecturer_id`, `user_id`, `first_name`, `last_name`, `email`, `faculty_name`, `course_taught`, `password`, `faculty_id`, `profile_photo`, `unit_taught`, `status`) VALUES
+(0, 8, 'Otieno', 'Mwithiki', 'mwioti@gmail.com', 'SCES', 'ICS', '', NULL, 'uploads/6862fbcf5ceb4_lec.jpeg', 'Probability and Statistics', 'pending');
 
 -- --------------------------------------------------------
 
@@ -166,7 +182,8 @@ INSERT INTO `users` (`user_id`, `firstName`, `lastName`, `email`, `password`, `r
 (5, 'ejany', 'jane', 'ej@gmail.com', '$2y$10$ibwvSP0i2V5SWsOwMX7.tuIaD4CwJtU8XeL5zdz9LfwOmXchCPbUa', 3),
 (6, 'try', 'one', 'try@gmail.com', '$2y$10$G59pL/PJGgNBGuyk6SKnqeXfKKwaEIGz5RKuz7zwQaeZwGaBmFT0i', 1),
 (7, 'Fatuma', 'Ahmed', 'fatma@gmail.com', '$2y$10$P/yrU.VtAx5nQQyFspVgGeuRHZmrhDMmwW4aRmRpTtvcWkz/DwJpW', 1),
-(8, 'Otieno', 'Mwithiki', 'mwioti@gmail.com', '$2y$10$awKRXvwUxoKWaj/TJX6oZe3sPJb/YvdFdBtdQzilR9a5d6gEPi.da', 2);
+(8, 'Otieno', 'Mwithiki', 'mwioti@gmail.com', '$2y$10$awKRXvwUxoKWaj/TJX6oZe3sPJb/YvdFdBtdQzilR9a5d6gEPi.da', 2),
+(9, 'Jude', 'Mido', 'jmido@gmail.com', '$2y$10$0mQTuxiU.vCYq0VQGIBniOKbnDSUK7UtU6N8JP34nrTTx3eHRp4Y2', 2);
 
 --
 -- Indexes for dumped tables
@@ -192,6 +209,12 @@ ALTER TABLE `courseadmin`
 --
 ALTER TABLE `faculty`
   ADD PRIMARY KEY (`faculty_id`);
+
+--
+-- Indexes for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `systemadmin`
@@ -230,6 +253,12 @@ ALTER TABLE `faculty`
   MODIFY `faculty_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `feedback`
+--
+ALTER TABLE `feedback`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `systemadmin`
 --
 ALTER TABLE `systemadmin`
@@ -239,7 +268,7 @@ ALTER TABLE `systemadmin`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
