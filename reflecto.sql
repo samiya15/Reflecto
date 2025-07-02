@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 30, 2025 at 01:55 PM
+-- Generation Time: Jun 30, 2025 at 11:07 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -26,12 +26,11 @@ USE `reflecto`;
 
 -- --------------------------------------------------------
 
-
+--
 -- Table structure for table `course`
 --
-DROP DATABASE IF EXISTS `reflecto`;
-CREATE DATABASE IF NOT EXISTS `reflecto` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `reflecto`;
+
+DROP TABLE IF EXISTS `course`;
 CREATE TABLE `course` (
   `course_id` int(11) NOT NULL,
   `course_name` varchar(100) DEFAULT NULL,
@@ -45,6 +44,7 @@ CREATE TABLE `course` (
 -- Table structure for table `courseadmin`
 --
 
+DROP TABLE IF EXISTS `courseadmin`;
 CREATE TABLE `courseadmin` (
   `course_admin_id` int(11) NOT NULL,
   `course_admin_name` varchar(100) DEFAULT NULL,
@@ -60,6 +60,7 @@ CREATE TABLE `courseadmin` (
 -- Table structure for table `faculty`
 --
 
+DROP TABLE IF EXISTS `faculty`;
 CREATE TABLE `faculty` (
   `faculty_id` int(11) NOT NULL,
   `faculty_name` varchar(100) DEFAULT NULL,
@@ -72,15 +73,27 @@ CREATE TABLE `faculty` (
 -- Table structure for table `lecturers`
 --
 
+DROP TABLE IF EXISTS `lecturers`;
 CREATE TABLE `lecturers` (
   `lecturer_id` int(11) NOT NULL,
-  `lecturer_name` varchar(100) DEFAULT NULL,
+  `user_id` int(11) NOT NULL,
+  `first_name` varchar(150) NOT NULL,
+  `last_name` varchar(150) NOT NULL,
   `email` varchar(100) NOT NULL,
   `faculty_name` varchar(100) DEFAULT NULL,
   `course_taught` varchar(100) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
-  `faculty_id` int(11) DEFAULT NULL
+  `faculty_id` int(11) DEFAULT NULL,
+  `profile_photo` varchar(255) DEFAULT NULL,
+  `unit_taught` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `lecturers`
+--
+
+INSERT INTO `lecturers` (`lecturer_id`, `user_id`, `first_name`, `last_name`, `email`, `faculty_name`, `course_taught`, `password`, `faculty_id`, `profile_photo`, `unit_taught`) VALUES
+(0, 8, 'Otieno', 'Mwithiki', 'mwioti@gmail.com', 'SCES', 'ICS', '', NULL, 'uploads/6862fbcf5ceb4_lec.jpeg', 'Probability and Statistics');
 
 -- --------------------------------------------------------
 
@@ -88,6 +101,7 @@ CREATE TABLE `lecturers` (
 -- Table structure for table `students`
 --
 
+DROP TABLE IF EXISTS `students`;
 CREATE TABLE `students` (
   `student_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -116,6 +130,7 @@ INSERT INTO `students` (`student_id`, `user_id`, `first_name`, `last_name`, `ema
 -- Table structure for table `systemadmin`
 --
 
+DROP TABLE IF EXISTS `systemadmin`;
 CREATE TABLE `systemadmin` (
   `system_admin_id` int(11) NOT NULL,
   `system_admin_name` varchar(100) DEFAULT NULL,
@@ -129,6 +144,7 @@ CREATE TABLE `systemadmin` (
 -- Table structure for table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
   `firstName` varchar(255) NOT NULL,
@@ -149,7 +165,8 @@ INSERT INTO `users` (`user_id`, `firstName`, `lastName`, `email`, `password`, `r
 (4, 'example', 'three', 'example3@gmail.com', '$2y$10$0pn.0AwxfAwUeGX/0VRE6.eIELDkoWfZejhB.YkvlOiystKb4DhxS', 1),
 (5, 'ejany', 'jane', 'ej@gmail.com', '$2y$10$ibwvSP0i2V5SWsOwMX7.tuIaD4CwJtU8XeL5zdz9LfwOmXchCPbUa', 3),
 (6, 'try', 'one', 'try@gmail.com', '$2y$10$G59pL/PJGgNBGuyk6SKnqeXfKKwaEIGz5RKuz7zwQaeZwGaBmFT0i', 1),
-(7, 'Fatuma', 'Ahmed', 'fatma@gmail.com', '$2y$10$P/yrU.VtAx5nQQyFspVgGeuRHZmrhDMmwW4aRmRpTtvcWkz/DwJpW', 1);
+(7, 'Fatuma', 'Ahmed', 'fatma@gmail.com', '$2y$10$P/yrU.VtAx5nQQyFspVgGeuRHZmrhDMmwW4aRmRpTtvcWkz/DwJpW', 1),
+(8, 'Otieno', 'Mwithiki', 'mwioti@gmail.com', '$2y$10$awKRXvwUxoKWaj/TJX6oZe3sPJb/YvdFdBtdQzilR9a5d6gEPi.da', 2);
 
 --
 -- Indexes for dumped tables
@@ -175,14 +192,6 @@ ALTER TABLE `courseadmin`
 --
 ALTER TABLE `faculty`
   ADD PRIMARY KEY (`faculty_id`);
-
---
--- Indexes for table `lecturers`
---
-ALTER TABLE `lecturers`
-  ADD PRIMARY KEY (`lecturer_id`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD KEY `faculty_id` (`faculty_id`);
 
 --
 -- Indexes for table `systemadmin`
@@ -221,12 +230,6 @@ ALTER TABLE `faculty`
   MODIFY `faculty_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `lecturers`
---
-ALTER TABLE `lecturers`
-  MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `systemadmin`
 --
 ALTER TABLE `systemadmin`
@@ -236,7 +239,7 @@ ALTER TABLE `systemadmin`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
@@ -253,12 +256,6 @@ ALTER TABLE `course`
 --
 ALTER TABLE `courseadmin`
   ADD CONSTRAINT `courseadmin_ibfk_1` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`);
-
---
--- Constraints for table `lecturers`
---
-ALTER TABLE `lecturers`
-  ADD CONSTRAINT `lecturers_ibfk_1` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
