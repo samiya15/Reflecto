@@ -36,12 +36,12 @@ $user_data = $result->fetch_assoc();
       <!-- Name and Email will be pre-filled -->
       <div class="input-group">
         <label>Name</label>
-        <input type="text" name="name" value="<?= htmlspecialchars($user_data['firstName']. ' ' . $user_data['lastName'])?>" readonly>
+        <input type="text" name="name" value="<?= htmlspecialchars($user_data['firstName']. ' ' . $user_data['lastName'])?>" >
       </div>
 
       <div class="input-group">
         <label>Email</label>
-        <input type="email" name="email" value="<?= htmlspecialchars($user_data['email'])?>" readonly>
+        <input type="email" name="email" value="<?= htmlspecialchars($user_data['email'])?>" >
       </div>
 
       <div class="input-group">
