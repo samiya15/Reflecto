@@ -2,21 +2,21 @@
 session_start();
 include("include/dbconnect.php");
 
-// Make sure the course admin is logged in
+// Ensure only course admins can access
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 3) {
     header("Location: signin.php");
     exit;
 }
 $user_id = $_SESSION['user_id'];
 
-// Fetch user basic info
+// Get user data
 $user_stmt = $conn->prepare("SELECT firstName, lastName, email FROM users WHERE user_id = ?");
 $user_stmt->bind_param("i", $user_id);
 $user_stmt->execute();
 $user_result = $user_stmt->get_result();
 $user_data = $user_result->fetch_assoc();
 
-// Fetch course admin info
+// Get courseadmin data
 $admin_stmt = $conn->prepare("SELECT * FROM courseadmin WHERE email = ?");
 $admin_stmt->bind_param("s", $user_data['email']);
 $admin_stmt->execute();
@@ -30,128 +30,86 @@ $admin_data = $admin_result->fetch_assoc();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Course Admin Dashboard</title>
   <link rel="stylesheet" href="courseadmin.css" />
-  <style>
-    /* You can move this to your CSS file */
-    .profile-form-container {
-      display: none;
-      position: absolute;
-      right: 10px;
-      top: 60px;
-      background: #fff;
-      padding: 15px;
-      border: 1px solid #ccc;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
-      z-index: 100;
-    }
-    .profile-form-container form div {
-      margin-bottom: 10px;
-    }
-    .dropdown {
-      display: none;
-      position: absolute;
-      background: #fff;
-      border: 1px solid #ccc;
-      right: 10px;
-      top: 40px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
-      z-index: 99;
-    }
-    .dropdown a {
-      display: block;
-      padding: 8px 12px;
-      text-decoration: none;
-      color: #333;
-    }
-    .dropdown a:hover {
-      background: #f0f0f0;
-    }
-  </style>
 </head>
 <body>
 
   <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="nav-left">
-      <li><a href="courseadmindash.php">Dashboard</a></li>
-      <li><a href="manage_lecturers.php">Manage Lecturers</a></li>
+      <ul>
+        <li><a href="courseadmindash.php">Dashboard</a></li>
+        <li><a href="manage_lecturers.php">Manage Lecturers</a></li>
+        <li><a href="manage_courses.php">Manage Courses</a></li>
+      </ul>
     </div>
     <div class="nav-right">
-      <div class="profile" id="profileArea">
-        <div class="profile-icon" id="profileIcon"></div>
-        <div class="dropdown" id="dropdownMenu">
-          <a href="#" id="viewProfileLink">View Profile</a>
-          <a href="signin.php">Log Out</a>
-        </div>
-      </div>
+      <a href="signin.php" class="logout-btn">Log Out</a>
     </div>
   </nav>
 
   <!-- Banner -->
   <div class="banner">
-    <h2>Welcome, <?= htmlspecialchars($user_data['firstName']) ?></h2>
-  </div>
-
-  <!-- Profile View/Edit Form -->
-  <div class="profile-form-container" id="profileFormContainer">
-    <form method="post" action="update_courseadmin_profile.php">
-      <input type="hidden" name="email" value="<?= htmlspecialchars($user_data['email']) ?>">
-      <div>
-        <label>Name:</label>
-        <input type="text" name="name" value="<?= htmlspecialchars($admin_data['course_admin_name'] ?: ($user_data['firstName'].' '.$user_data['lastName'])) ?>" required>
-      </div>
-      <div>
-        <label>Email:</label>
-        <input type="email" value="<?= htmlspecialchars($user_data['email']) ?>" disabled>
-      </div>
-      <div>
-        <label>Faculty:</label>
-        <input type="text" name="faculty_name" value="<?= htmlspecialchars($admin_data['faculty_name'] ?? '') ?>">
-      </div>
-      <button type="submit">Update Profile</button>
-    </form>
+    <h2>Welcome, <?= htmlspecialchars($user_data['firstName']) ?> <?= htmlspecialchars($user_data['lastName']) ?></h2>
   </div>
 
   <!-- Dashboard Content -->
   <div class="dashboard-content">
     <div class="card">
-      <h3>Pending Lecturers</h3>
-      <p>View and verify new lecturer accounts.</p>
-      <button onclick="window.location.href='manage_lecturers.php'">View Lecturers</button>
+      <h3>Update Profile</h3><br>
+      <p>Update your information</p>
+      <button id="updateProfileBtn">Update Profile</button>
     </div>
     <div class="card">
-      <h3>Manage Courses</h3>
-      <p>Add or edit courses and assign lecturers.</p>
+      <h3>Pending Lecturer Approvals</h3><br>
+      <p>Review and verify lecturer accounts.</p>
+      <button>View Pending Lecturers</button>
+    </div>
+    <div class="card">
+      <h3>Manage Courses</h3><br>
+      <p>Add, edit, or remove courses.</p>
       <button>Manage Courses</button>
+    </div>
+    <div class="card">
+      <h3>Reports</h3><br>
+      <p>Generate and download activity reports.</p>
+      <button>View Reports</button>
     </div>
   </div>
 
-  <!-- JavaScript for Dropdown and Profile Panel -->
+  <!-- Modal Overlay -->
+  <div id="profileModal" class="modal">
+    <div class="modal-content">
+      <h3>Update Your Profile</h3><br>
+      <form method="post" action="update_cadmin_profile.php">
+        <div class="input-group">
+          <label>Name</label>
+          <input type="text" name="name" value="<?= htmlspecialchars($admin_data['course_admin_name'] ?: ($user_data['firstName'] . ' ' . $user_data['lastName'])) ?>" required>
+        </div>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" name="email" value="<?= htmlspecialchars($user_data['email']) ?>" readonly>
+        </div>
+        <div class="input-group">
+          <label>Faculty</label>
+          <input type="text" name="faculty_name" value="<?= htmlspecialchars($admin_data['faculty_name'] ?? '') ?>">
+        </div><br>
+        <button type="submit" class="submit-btn">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript for modal -->
   <script>
-    const profileIcon = document.getElementById("profileIcon");
-    const dropdownMenu = document.getElementById("dropdownMenu");
-    const profileArea = document.getElementById("profileArea");
-    const viewProfileLink = document.getElementById("viewProfileLink");
-    const profileFormContainer = document.getElementById("profileFormContainer");
+    const updateProfileBtn = document.getElementById("updateProfileBtn");
+    const profileModal = document.getElementById("profileModal");
 
-    // Toggle dropdown menu
-    profileIcon.addEventListener("click", (e) => {
-      e.stopPropagation();
-      dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
-      profileFormContainer.style.display = "none";
+    updateProfileBtn.addEventListener("click", () => {
+      profileModal.style.display = "flex";
     });
 
-    // Show profile form
-    viewProfileLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      dropdownMenu.style.display = "none";
-      profileFormContainer.style.display = profileFormContainer.style.display === "block" ? "none" : "block";
-    });
-
-    // Close both when clicking outside
-    document.addEventListener("click", function(event) {
-      if (!profileArea.contains(event.target)) {
-        dropdownMenu.style.display = "none";
-        profileFormContainer.style.display = "none";
+    profileModal.addEventListener("click", (e) => {
+      if (e.target === profileModal) {
+        profileModal.style.display = "none";
       }
     });
   </script>
