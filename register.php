@@ -71,19 +71,65 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = $_POST['email'];
         $password = $_POST['password'];
 
-        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-
-        $result = $stmt->get_result();
+ $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
 
         if ($result->num_rows == 1) {
             $row = $result->fetch_assoc();
+
+             if ($row['status'] == 'rejected') {
+        echo "<script>alert('Your account has been rejected. You cannot log in.');window.location.href='signin.php';</script>";
+        exit();
+    }
+
+    if ($row['status'] == 'pending') {
+        echo "<script>alert('Your account is pending approval. Please wait for admin approval.');window.location.href='signin.php';</script>";
+        exit();
+    }
+
 
             if (password_verify($password, $row['password'])) {
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['role'] = $row['role'];
                 $_SESSION['user_id'] = $row['user_id'];
+
+if ($row['role'] == 2) { // Lecturer
+    // Fetch lecturer details including profile_completed
+    $lecturerCheck = $conn->prepare("
+        SELECT l.profile_completed, l.faculty_name, l.course_taught, l.unit_taught, 
+               u.firstName, u.lastName, u.email
+        FROM lecturers l
+        JOIN users u ON l.user_id = u.user_id
+        WHERE l.user_id = ?
+    ");
+    $lecturerCheck->bind_param("i", $row['user_id']);
+    $lecturerCheck->execute();
+    $lecturerResult = $lecturerCheck->get_result();
+
+    if ($lecturerResult->num_rows > 0) {
+        $lecturerData = $lecturerResult->fetch_assoc();
+
+        // Store info in session (to prefill form)
+        $_SESSION['lecturer_name'] = $lecturerData['firstName'] . ' ' . $lecturerData['lastName'];
+        $_SESSION['lecturer_email'] = $lecturerData['email'];
+
+        if ($lecturerData['profile_completed'] == 0) {
+            // Redirect to profile completion
+            header("Location: lec_complete_profile.php");
+            exit();
+        } else {
+            header("Location: lecdash.php");
+            exit();
+        }
+    } else {
+        echo "Lecturer record not found.";
+        exit();
+    }
+}
+
+
 
 // If the user is a Course Admin, ensure their details are in courseadmin table
 if ($row['role'] == 3) {

@@ -1,0 +1,91 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+}
+
+.navbar {
+  background-color: #333;
+  color: #fff;
+  padding: 1em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 1em;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.navbar .logout-btn {
+  color: #fff;
+  text-decoration: none;
+  padding: 0.5em 1em;
+  background-color: #333;
+  border-radius: 4px;
+}
+.navbar .logout-btn:hover {
+  background-color: rgb(94, 209, 90);
+}
+.container {
+  max-width: 1000px;
+  margin: 2em auto;
+  background: #fff;
+  padding: 2em;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+  margin-top: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #333;
+  color: #fff;
+}
+
+th, td {
+  padding: 1em;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+.approve-btn {
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.reject-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.approve-btn:hover {
+  background-color: #27ae60;
+}
+
+.reject-btn:hover {
+  background-color: #c0392b;
+}
