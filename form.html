@@ -9,18 +9,63 @@
 
 <div class="container">
   <h1>Student Feedback</h1>
-  <form method="POST" action="process_feedback.php">
+  <form id="feedback-form">
     <div class="input-group">
       <label for="feedback">Your Feedback</label>
       <textarea id="feedback" name="feedback_text" rows="6" required></textarea>
     </div>
 
     <div class="button-group">
-      <button type="submit" name="submit_anonymous">Submit Anonymously</button>
-      <button type="submit" name="submit_with_details">Submit with My Details</button>
+      <button type="submit" id="anonymous-btn">Submit Anonymously</button>
+      <button type="submit" id="detailed-btn">Submit with My Details</button>
     </div>
   </form>
+
+  <div id="result" style="margin-top: 20px;"></div>
 </div>
+
+<script>
+  let isAnonymous = false;
+
+  // Track which button was clicked
+  document.getElementById("anonymous-btn").addEventListener("click", function () {
+    isAnonymous = true;
+  });
+
+  document.getElementById("detailed-btn").addEventListener("click", function () {
+    isAnonymous = false;
+  });
+
+  document.getElementById("feedback-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const message = document.getElementById("feedback").value;
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/feedback/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: message,
+          is_anonymous: isAnonymous
+        })
+      });
+
+      const data = await response.json();
+
+      document.getElementById("result").innerHTML = `
+        <p><strong>Sentiment:</strong> ${data.sentiment}</p>
+        <p><strong>Confidence:</strong> ${data.confidence_score}</p>
+        <p><strong>Contains Profanity:</strong> ${data.contains_profanity}</p>
+        <p><strong>Cleaned Text:</strong> ${data.cleaned_text}</p>
+        <p><strong>Submitted Anonymously:</strong> ${isAnonymous}</p>
+      `;
+    } catch (error) {
+      console.error("Error:", error);
+      document.getElementById("result").innerHTML = `<p style="color:red;">Failed to connect to backend</p>`;
+    }
+  });
+</script>
 
 </body>
 </html>
