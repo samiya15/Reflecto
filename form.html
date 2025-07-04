@@ -54,12 +54,9 @@
       const data = await response.json();
 
       document.getElementById("result").innerHTML = `
-        <p><strong>Sentiment:</strong> ${data.sentiment}</p>
-        <p><strong>Confidence:</strong> ${data.confidence_score}</p>
-        <p><strong>Contains Profanity:</strong> ${data.contains_profanity}</p>
-        <p><strong>Cleaned Text:</strong> ${data.cleaned_text}</p>
-        <p><strong>Submitted Anonymously:</strong> ${isAnonymous}</p>
-      `;
+  <p style="color:green;"><strong>Thank you!</strong> Your feedback has been submitted successfully.</p>
+`;
+
     } catch (error) {
       console.error("Error:", error);
       document.getElementById("result").innerHTML = `<p style="color:red;">Failed to connect to backend</p>`;
