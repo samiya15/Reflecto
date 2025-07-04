@@ -9,33 +9,22 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 2) {
 
 $user_id = $_SESSION['user_id'];
 
-if (
-    empty($_POST['name']) ||
-    empty($_POST['course_taught']) ||
-    empty($_POST['unit_taught'])
-) {
-    echo "All fields are required.";
-    exit();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $faculty = $_POST['faculty_name'];
+    $courses = $_POST['course_taught'];
+    $units = $_POST['unit_taught'];
+
+    $update = $conn->prepare("
+        UPDATE lecturers
+        SET faculty_name = ?, course_taught = ?, unit_taught = ?, profile_completed = 1
+        WHERE user_id = ?
+    ");
+    $update->bind_param("sssi", $faculty, $courses, $units, $user_id);
+    if ($update->execute()) {
+        header("Location: lecdash.php");
+        exit();
+    } else {
+        echo "Update failed: " . $conn->error;
+    }
 }
-
-// Split name
-$name_parts = explode(' ', trim($_POST['name']));
-$firstName = $name_parts[0];
-$lastName = isset($name_parts[1]) ? $name_parts[1] : '';
-
-$course_taught = trim($_POST['course_taught']);
-$unit_taught = trim($_POST['unit_taught']);
-
-// Update users table
-$updateUser = $conn->prepare("UPDATE users SET firstName = ?, lastName = ? WHERE user_id = ?");
-$updateUser->bind_param("ssi", $firstName, $lastName, $user_id);
-$updateUser->execute();
-
-// Update lecturers table
-$updateLecturer = $conn->prepare("UPDATE lecturers SET course_taught = ?, unit_taught = ? WHERE user_id = ?");
-$updateLecturer->bind_param("ssi", $course_taught, $unit_taught, $user_id);
-$updateLecturer->execute();
-
-header("Location: lecdash.php");
-exit();
 ?>
