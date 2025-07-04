@@ -104,8 +104,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     if ($lecturerResult->num_rows === 0) {
                         // Insert a new record with basic info
-                        $insertLecturer = $conn->prepare("INSERT INTO lecturers (user_id, faculty_name, course_taught, unit_taught, profile_completed)
-                            VALUES (?, '', '', '', 0)");
+                        $insertLecturer = $conn->prepare("INSERT INTO lecturers (user_id, faculty_name, course_taught, unit_taught, profile_completed, verification_status)
+                            VALUES (?, '', '', '', 0, 'pending')");
                         $insertLecturer->bind_param("i", $row['user_id']);
                         $insertLecturer->execute();
                     }
@@ -133,22 +133,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // If Course Admin
                 if ($row['role'] == 3) {
                     // Check if courseadmin record exists
-                    $checkAdmin = $conn->prepare("SELECT course_admin_id, faculty_name FROM courseadmin WHERE email = ?");
+                    $checkAdmin = $conn->prepare("SELECT course_admin_id, faculty_name, faculty_id FROM courseadmin WHERE email = ?");
                     $checkAdmin->bind_param("s", $row['email']);
                     $checkAdmin->execute();
                     $adminResult = $checkAdmin->get_result();
 
                     if ($adminResult->num_rows === 0) {
                         // Insert the record from users table
-                        $insertAdmin = $conn->prepare("INSERT INTO courseadmin (course_admin_name, email) VALUES (?, ?)");
+                        $insertAdmin = $conn->prepare("INSERT INTO courseadmin (course_admin_name, email, faculty_id) VALUES (?, ?, ?)");
                         $fullName = $row['firstName'] . ' ' . $row['lastName'];
-                        $insertAdmin->bind_param("ss", $fullName, $row['email']);
+                        $faculty_id = 1;
+                        $insertAdmin->bind_param("ss", $fullName, $row['email'], $faculty_id);
                         $insertAdmin->execute();
-                        $_SESSION['faculty_name'] = ''; // No faculty yet
+                        $_SESSION['faculty_id'] = $faculty_id;
                     } else {
                         // Fetch faculty for session
                         $adminData = $adminResult->fetch_assoc();
-                        $_SESSION['faculty_name'] = $adminData['faculty_name'];
+                        $_SESSION['faculty_id'] = $adminData['faculty_id'];
                     }
                 }
 

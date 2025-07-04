@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 02, 2025 at 07:31 PM
+-- Generation Time: Jul 04, 2025 at 01:51 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -53,6 +53,15 @@ CREATE TABLE `courseadmin` (
   `faculty_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `courseadmin`
+--
+
+INSERT INTO `courseadmin` (`course_admin_id`, `course_admin_name`, `email`, `faculty_name`, `password`, `faculty_id`) VALUES
+(1, 'Course Admin', 'cadmin@gmail.com', 'SBS', '', NULL),
+(2, 'sces admin', 'sces@gmail.com', 'SCES', '', NULL),
+(3, 'sbs admin', 'sbs@gmail.com', 'SBS', '', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -90,7 +99,7 @@ CREATE TABLE `feedback` (
 
 DROP TABLE IF EXISTS `lecturers`;
 CREATE TABLE `lecturers` (
-  `lecturer_id` int(11) NOT NULL,
+  `lecturer_id` int
   `user_id` int(11) NOT NULL,
   `first_name` varchar(150) NOT NULL,
   `last_name` varchar(150) NOT NULL,
@@ -101,15 +110,17 @@ CREATE TABLE `lecturers` (
   `faculty_id` int(11) DEFAULT NULL,
   `profile_photo` varchar(255) DEFAULT NULL,
   `unit_taught` varchar(255) DEFAULT NULL,
-  `status` enum('pending','approved','rejected') DEFAULT 'pending'
+  `verification_status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `profile_completed` tinyint(4) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `lecturers`
 --
 
-INSERT INTO `lecturers` (`lecturer_id`, `user_id`, `first_name`, `last_name`, `email`, `faculty_name`, `course_taught`, `password`, `faculty_id`, `profile_photo`, `unit_taught`, `status`) VALUES
-(0, 8, 'Otieno', 'Mwithiki', 'mwioti@gmail.com', 'SCES', 'ICS', '', NULL, 'uploads/6862fbcf5ceb4_lec.jpeg', 'Probability and Statistics', 'pending');
+INSERT INTO `lecturers` (`lecturer_id`, `user_id`, `first_name`, `last_name`, `email`, `faculty_name`, `course_taught`, `password`, `faculty_id`, `profile_photo`, `unit_taught`, `verification_status`, `profile_completed`) VALUES
+(0, 8, 'Otieno', 'Mwithiki', 'mwioti@gmail.com', 'SCES', 'ICS', '', NULL, 'uploads/6862fbcf5ceb4_lec.jpeg', 'Probability and Statistics', 'pending', 0),
+(0, 14, '', '', '', 'SBS, SCES', 'ICS, BBIT, BCOM', '', NULL, NULL, 'BBIT3201, ICS2201, BCOM3105', 'pending', 1);
 
 -- --------------------------------------------------------
 
@@ -167,23 +178,31 @@ CREATE TABLE `users` (
   `lastName` varchar(255) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` int(11) NOT NULL
+  `role` int(11) NOT NULL,
+  `status` enum('pending','approved','rejected') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `firstName`, `lastName`, `email`, `password`, `role`) VALUES
-(1, 'Jane ', 'Doe', 'example@gmail.com', '$2y$10$xg5m3r8J9IQHGVprvp66Nu4E7UAq1/m8Vs.WBLcHBjoisUsILYwXO', 1),
-(2, 'Amina', 'Hassan', 'example2@gmail.com', '$2y$10$V5kWz39CZB6AaN90r1vtaeKUpe5blEcu04PUN2sCXa5Y/jcqDYEPC', 2),
-(3, 'Mellisa', 'James', 'mlissa@gmail.com', '$2y$10$wO71VcVcEpZA3SpTi3FoOuqgDfyzRn2EAlH1oAt0GtVjGVcgSNdLG', 1),
-(4, 'example', 'three', 'example3@gmail.com', '$2y$10$0pn.0AwxfAwUeGX/0VRE6.eIELDkoWfZejhB.YkvlOiystKb4DhxS', 1),
-(5, 'ejany', 'jane', 'ej@gmail.com', '$2y$10$ibwvSP0i2V5SWsOwMX7.tuIaD4CwJtU8XeL5zdz9LfwOmXchCPbUa', 3),
-(6, 'try', 'one', 'try@gmail.com', '$2y$10$G59pL/PJGgNBGuyk6SKnqeXfKKwaEIGz5RKuz7zwQaeZwGaBmFT0i', 1),
-(7, 'Fatuma', 'Ahmed', 'fatma@gmail.com', '$2y$10$P/yrU.VtAx5nQQyFspVgGeuRHZmrhDMmwW4aRmRpTtvcWkz/DwJpW', 1),
-(8, 'Otieno', 'Mwithiki', 'mwioti@gmail.com', '$2y$10$awKRXvwUxoKWaj/TJX6oZe3sPJb/YvdFdBtdQzilR9a5d6gEPi.da', 2),
-(9, 'Jude', 'Mido', 'jmido@gmail.com', '$2y$10$0mQTuxiU.vCYq0VQGIBniOKbnDSUK7UtU6N8JP34nrTTx3eHRp4Y2', 2);
+INSERT INTO `users` (`user_id`, `firstName`, `lastName`, `email`, `password`, `role`, `status`) VALUES
+(1, 'Jane ', 'Doe', 'example@gmail.com', '$2y$10$xg5m3r8J9IQHGVprvp66Nu4E7UAq1/m8Vs.WBLcHBjoisUsILYwXO', 1, 'pending'),
+(2, 'Amina', 'Hassan', 'example2@gmail.com', '$2y$10$V5kWz39CZB6AaN90r1vtaeKUpe5blEcu04PUN2sCXa5Y/jcqDYEPC', 2, 'pending'),
+(3, 'Mellisa', 'James', 'mlissa@gmail.com', '$2y$10$wO71VcVcEpZA3SpTi3FoOuqgDfyzRn2EAlH1oAt0GtVjGVcgSNdLG', 1, 'pending'),
+(4, 'example', 'three', 'example3@gmail.com', '$2y$10$0pn.0AwxfAwUeGX/0VRE6.eIELDkoWfZejhB.YkvlOiystKb4DhxS', 1, 'pending'),
+(5, 'ejany', 'jane', 'ej@gmail.com', '$2y$10$ibwvSP0i2V5SWsOwMX7.tuIaD4CwJtU8XeL5zdz9LfwOmXchCPbUa', 3, 'rejected'),
+(6, 'try', 'one', 'try@gmail.com', '$2y$10$G59pL/PJGgNBGuyk6SKnqeXfKKwaEIGz5RKuz7zwQaeZwGaBmFT0i', 1, 'pending'),
+(7, 'Fatuma', 'Ahmed', 'fatma@gmail.com', '$2y$10$P/yrU.VtAx5nQQyFspVgGeuRHZmrhDMmwW4aRmRpTtvcWkz/DwJpW', 1, 'pending'),
+(8, 'Otieno', 'Mwithiki', 'mwioti@gmail.com', '$2y$10$awKRXvwUxoKWaj/TJX6oZe3sPJb/YvdFdBtdQzilR9a5d6gEPi.da', 2, 'approved'),
+(9, 'Jude', 'Mido', 'jmido@gmail.com', '$2y$10$0mQTuxiU.vCYq0VQGIBniOKbnDSUK7UtU6N8JP34nrTTx3eHRp4Y2', 2, 'approved'),
+(10, 'cos', 'Admin', 'cadmin@gmail.com', '$2y$10$nChct.9ulYwgwikfRYrY0eosKFUgGRoewS4GRzBjMFxKPheKRxghK', 3, 'approved'),
+(11, 'System', 'Admin', 'sysadmin@strathmore.edu', '$2y$10$eDygFx0/GcmQQu/k4GL2Quc68GxQmYulIR7PdWG/rTICjD2gKVPrO', 4, 'approved'),
+(12, 'hassan', 'Ahmed', 'hahmed@gmail.com', '$2y$10$/oL8hPAaElDSkY6w3Y.zZO1fkWhbj9hGIeq8AdNjttjMCJar3uaBW', 1, 'pending'),
+(13, 'Amanda', 'Awiti', 'aawiti@gmail.com', '$2y$10$yFHSSIINW5rTzDyr2Q9gReuJXYUyPRo96l/zZMwHWk6nfFS0OwbCS', 2, 'approved'),
+(14, 'Hasna', 'Mugo', 'hmugo@strathmore.edu', '$2y$10$0mR7xkI5daohYe51VrAUQ.yNFYi9LWeEjfV78QSIudNADRsuyt11e', 2, 'approved'),
+(15, 'sces', 'admin', 'sces@gmail.com', '$2y$10$9s5yJxzGIdCA6CmvPxuYFOvRIUMh1c.LZpWMfz4UiuVaWTtvsZahm', 3, 'approved'),
+(16, 'sbs', 'admin', 'sbs@gmail.com', '$2y$10$WHhWau.AB6H9dk/NKsSpAuTzT2BKDfuPy/4bOUWU4taVxFnBi/rzi', 3, 'approved');
 
 --
 -- Indexes for dumped tables
@@ -244,7 +263,7 @@ ALTER TABLE `course`
 -- AUTO_INCREMENT for table `courseadmin`
 --
 ALTER TABLE `courseadmin`
-  MODIFY `course_admin_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `course_admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `faculty`
@@ -268,7 +287,7 @@ ALTER TABLE `systemadmin`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Constraints for dumped tables

@@ -37,7 +37,7 @@ $admin_data = $admin_result->fetch_assoc();
   <nav class="navbar">
     <div class="nav-left">
       <ul>
-        <li><a href="courseadmindash.php">Dashboard</a></li>
+        <li><a href="courseadmin.php">Dashboard</a></li>
         <li><a href="manage_lecturers.php">Manage Lecturers</a></li>
         <li><a href="manage_courses.php">Manage Courses</a></li>
       </ul>
@@ -61,8 +61,8 @@ $admin_data = $admin_result->fetch_assoc();
     </div>
     <div class="card">
       <h3>Pending Lecturer Approvals</h3><br>
-      <p>Review and verify lecturer accounts.</p>
-      <button>View Pending Lecturers</button>
+      <p>Review and verify lecturer accounts.</p><br>
+   <a href="manage_lecturers.php" class="button-link">Approve Lecturers</a>
     </div>
     <div class="card">
       <h3>Manage Courses</h3><br>

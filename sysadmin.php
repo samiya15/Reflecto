@@ -34,7 +34,11 @@
       <p>Review and approve/reject new users (students, lecturers, course admins).</p>
       <button onclick="location.href='manage_users.php'">Manage User Approvals</button>
     </div>
-
+<div class="card">
+  <h3>Manage Faculties</h3>
+  <p>Create, edit, and delete faculties.</p>
+  <button onclick="location.href='manage_faculties.php'">Manage Faculties</button>
+</div>
     <!-- Card: Approve Student Profile Updates -->
     <div class="card">
       <h3>Pending Student Profile Updates</h3>
