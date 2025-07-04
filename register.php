@@ -94,6 +94,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['role'] = $row['role'];
                 $_SESSION['user_id'] = $row['user_id'];
 
+// If Student
+if ($row['role'] == 1) {
+    // Check if student record exists
+    $checkStudent = $conn->prepare("SELECT student_id FROM students WHERE user_id = ?");
+    $checkStudent->bind_param("i", $row['user_id']);
+    $checkStudent->execute();
+    $studentResult = $checkStudent->get_result();
+
+    if ($studentResult->num_rows === 0) {
+        // Insert a record with no faculty and pending status
+        $insertStudent = $conn->prepare("INSERT INTO students (user_id, faculty_id, student_course, status)
+            VALUES (?, NULL, '', 'pending')
+        ");
+         if (!$insertStudent) {
+        die("Prepare failed: " . $conn->error);
+    }
+        $insertStudent->bind_param("i", $row['user_id']);
+        $insertStudent->execute();
+    }
+
+    // Now fetch the record to see if profile is complete
+    $profileCheck = $conn->prepare("
+        SELECT faculty_id
+        FROM students
+        WHERE user_id = ?
+    ");
+    $profileCheck->bind_param("i", $row['user_id']);
+    $profileCheck->execute();
+    $profileResult = $profileCheck->get_result();
+    $profileData = $profileResult->fetch_assoc();
+
+    if (empty($profileData['faculty_id'])) {
+        header("Location: student_complete_profile.php");
+        exit();
+    } else {
+        header("Location: studentdash.php");
+        exit();
+    }
+}
+
+
                 // If Lecturer
                 if ($row['role'] == 2) {
                     // Check if lecturer record exists
@@ -131,27 +172,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 // If Course Admin
-                if ($row['role'] == 3) {
-                    // Check if courseadmin record exists
-                    $checkAdmin = $conn->prepare("SELECT course_admin_id, faculty_name, faculty_id FROM courseadmin WHERE email = ?");
-                    $checkAdmin->bind_param("s", $row['email']);
-                    $checkAdmin->execute();
-                    $adminResult = $checkAdmin->get_result();
+               if ($row['role'] == 3) {
+    // Check if courseadmin record exists
+    $checkAdmin = $conn->prepare("SELECT course_admin_id, faculty_id FROM courseadmin WHERE email = ?");
+    $checkAdmin->bind_param("s", $row['email']);
+    $checkAdmin->execute();
+    $adminResult = $checkAdmin->get_result();
 
-                    if ($adminResult->num_rows === 0) {
-                        // Insert the record from users table
-                        $insertAdmin = $conn->prepare("INSERT INTO courseadmin (course_admin_name, email, faculty_id) VALUES (?, ?, ?)");
-                        $fullName = $row['firstName'] . ' ' . $row['lastName'];
-                        $faculty_id = 1;
-                        $insertAdmin->bind_param("ss", $fullName, $row['email'], $faculty_id);
-                        $insertAdmin->execute();
-                        $_SESSION['faculty_id'] = $faculty_id;
-                    } else {
-                        // Fetch faculty for session
-                        $adminData = $adminResult->fetch_assoc();
-                        $_SESSION['faculty_id'] = $adminData['faculty_id'];
-                    }
-                }
+    if ($adminResult->num_rows === 0) {
+        // Insert a record with no faculty yet
+        $insertAdmin = $conn->prepare("INSERT INTO courseadmin (course_admin_name, email) VALUES (?, ?)");
+        $fullName = $row['firstName'] . ' ' . $row['lastName'];
+        $insertAdmin->bind_param("ss", $fullName, $row['email']);
+        $insertAdmin->execute();
+         // Since no faculty, force to complete profile
+    header("Location: courseadmin_complete_profile.php");
+    exit();
+} else {
+    $adminData = $adminResult->fetch_assoc();
+    
+    if (empty($adminData['faculty_id'])) {
+        // No faculty yet, force to complete profile
+        header("Location: courseadmin_complete_profile.php");
+        exit();
+    }
+    
+    $_SESSION['faculty_id'] = $adminData['faculty_id'];
+}
+}
 
                 // Redirect based on role
                 switch ($row['role']) {

@@ -1,0 +1,55 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.form-box {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 300px;
+}
+
+.form-box h2 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.form-box label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.form-box select, 
+.form-box button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-box button {
+    background: #800000;
+    color: white;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s;
+}
+
+.form-box button:hover {
+    background: #a00000;
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+}

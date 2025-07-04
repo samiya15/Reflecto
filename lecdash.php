@@ -34,12 +34,18 @@ $data = $result->fetch_assoc();
 <body>
 <nav class="navbar">
   <div class="nav-left">
-    <h2>Lecturer Dashboard</h2>
+    <ul>
+    <li><a href="lecdash.php">Dashboard</a></li>
+    </ul>
   </div>
   <div class="nav-right">
     <a href="signin.php" class="logout-btn">Log Out</a>
   </div>
 </nav>
+
+ <div class="banner">
+    <h2>Welcome, <?= htmlspecialchars($data['firstName']) ?> <?= htmlspecialchars($data['lastName']) ?></h2>
+  </div>
 
 <div class="dashboard">
   <div class="card">

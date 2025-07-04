@@ -1,0 +1,125 @@
+/* Base styles */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f5f5f5;
+  color: #333;
+}
+
+/* Navbar styling */
+.navbar {
+  background-color: #800000; /* Maroon */
+  color: #fff;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar .nav-left ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.navbar .nav-left li {
+  margin-right: 20px;
+}
+
+.navbar .nav-left a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.navbar .logout-btn {
+  background: #b30000;
+  padding: 8px 15px;
+  border-radius: 4px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+h2 {
+  text-align: center;
+  margin: 30px 0;
+  color: #800000;
+}
+
+/* Table styling */
+table {
+  width: 90%;
+  margin: 0 auto 40px auto;
+  border-collapse: collapse;
+  background: #fff;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+thead {
+  background-color: #800000;
+  color: #fff;
+}
+
+thead th {
+  padding: 12px;
+  text-align: left;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tbody td {
+  padding: 12px;
+  vertical-align: top;
+}
+
+/* Buttons */
+.action-btn {
+  padding: 6px 12px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 500;
+}
+
+.approve-btn {
+  background-color: #4CAF50;
+}
+
+.reject-btn {
+  background-color: #d32f2f;
+}
+
+.action-btn:hover {
+  opacity: 0.9;
+}
+
+/* For smaller screens */
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+    width: 100%;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  tbody td::before {
+    content: attr(data-label);
+    font-weight: bold;
+  }
+}

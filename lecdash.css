@@ -8,23 +8,54 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: maroon;
+  background: rgb(13, 88, 42);
   color: white;
   padding: 10px 20px;
 }
 
-.navbar h2 {
+.nav-left ul {
+  display: flex;
+  list-style: none;
   margin: 0;
+  padding: 0;
 }
 
+.nav-left ul li {
+  margin-right: 20px;
+}
+
+.nav-left ul li a {
+  color: #ecf0f1;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.nav-left ul li a:hover {
+  background-color: #3ea15c;
+}
+
+
 .logout-btn {
-  background: #fff;
-  color: maroon;
+  background: rgb(13, 88, 42);
+  color: white;
   text-decoration: none;
   padding: 6px 12px;
   border-radius: 4px;
 }
 
+.nav-right .logout-btn:hover {
+  background-color: #3ea15c;
+}
+/* Banner */
+.banner {
+  background: rgb(26, 145, 71);
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
 .dashboard {
   display: flex;
   gap: 20px;
@@ -43,7 +74,7 @@ body {
 }
 
 .card button {
-  background: maroon;
+  background: rgb(13, 88, 42);
   color: white;
   border: none;
   padding: 8px 12px;
@@ -52,7 +83,7 @@ body {
 }
 
 .card button:hover {
-  background: #990000;
+  background: #1e7734;
 }
 
 /* Modal styles */
@@ -104,7 +135,7 @@ body {
 }
 
 .save-btn {
-  background: maroon;
+  background: rgb(16, 117, 38);
   color: white;
   border: none;
   padding: 8px 12px;
