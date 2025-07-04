@@ -12,8 +12,8 @@
   <nav class="navbar">
     <div class="nav-left">
       <ul>
-        <li><a href="#">Dashboard</a></li>
-        <li><a href="#">Manage Users</a></li>
+        <li><a href="sysadmin.php">Dashboard</a></li>
+        <li><a href="manage_users.php">Manage Users</a></li>
       </ul>
     </div>
     <div class="nav-right">

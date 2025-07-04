@@ -30,7 +30,7 @@ $faculties_result = $conn->query("SELECT faculty_id, faculty_name FROM faculty")
 <body>
 <div class="container">
   <h2>Complete Your Profile</h2>
-  <form action="save_lecturer_profile.php" method="post">
+  <form action="save_lec_profile.php" method="post">
     <div class="input-group">
       <label>Name</label>
       <input type="text" readonly value="<?= htmlspecialchars($user_data['firstName'].' '.$user_data['lastName']) ?>">

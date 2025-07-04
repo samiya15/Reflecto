@@ -20,6 +20,14 @@ if (
 }
 
 $faculty_ids = $_POST['faculty_ids'];
+if (!is_array($faculty_ids)) {
+    echo "Invalid faculty selection.";
+    exit();
+}
+
+// Sanitize IDs
+$faculty_ids = array_map('intval', $faculty_ids);
+
 $course_taught = trim($_POST['course_taught']);
 $unit_taught = trim($_POST['unit_taught']);
 
@@ -32,14 +40,24 @@ $update = $conn->prepare("
 $update->bind_param("ssi", $course_taught, $unit_taught, $user_id);
 $update->execute();
 
-// Remove any existing faculty associations (in case of update)
-$conn->prepare("DELETE FROM lecturer_faculties WHERE lecturer_id = (SELECT lecturer_id FROM lecturers WHERE user_id = ?)")->bind_param("i", $user_id)->execute();
-
 // Get lecturer_id
 $getLecturerId = $conn->prepare("SELECT lecturer_id FROM lecturers WHERE user_id = ?");
 $getLecturerId->bind_param("i", $user_id);
 $getLecturerId->execute();
-$lecturer_id = $getLecturerId->get_result()->fetch_assoc()['lecturer_id'];
+$result = $getLecturerId->get_result();
+$row = $result->fetch_assoc();
+
+if (!$row) {
+    echo "Lecturer not found.";
+    exit();
+}
+
+$lecturer_id = $row['lecturer_id'];
+
+// Remove existing faculty associations
+$deleteFac = $conn->prepare("DELETE FROM lecturer_faculties WHERE lecturer_id = ?");
+$deleteFac->bind_param("i", $lecturer_id);
+$deleteFac->execute();
 
 // Insert selected faculties
 $insertFac = $conn->prepare("INSERT INTO lecturer_faculties (lecturer_id, faculty_id) VALUES (?, ?)");

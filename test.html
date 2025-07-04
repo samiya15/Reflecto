@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modal Test</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+  }
+
+  .submit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<button id="updateProfileBtn">View Profile</button>
+
+<div id="profileModal" class="modal">
+  <div class="modal-content">
+    <h3>Update Your Profile</h3>
+    <form>
+      <div class="input-group">
+        <label>Name</label>
+        <input type="text" name="name" value="Test Name" required>
+      </div>
+      <br>
+      <button type="button" class="submit-btn">Save Changes</button>
+    </form>
+  </div>
+</div>
+
+<script>
+const updateProfileBtn = document.getElementById("updateProfileBtn");
+const profileModal = document.getElementById("profileModal");
+
+updateProfileBtn.addEventListener("click", () => {
+  profileModal.style.display = "flex";
+});
+
+profileModal.addEventListener("click", (e) => {
+  if (e.target === profileModal) {
+    profileModal.style.display = "none";
+  }
+});
+</script>
+
+</body>
+</html>
