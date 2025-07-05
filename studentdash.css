@@ -6,17 +6,50 @@ body {
 }
 
 .navbar {
-  background: maroon;
-  color: #fff;
-  padding: 1rem;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  background-color: #309B90;
+  padding: 0 10px;
+  height: 60px;
 }
 
-.navbar a {
-  color: #fff;
+.nav-left ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-left ul li {
+  margin-right: 20px;
+}
+
+.nav-left ul li a {
+  color: #ecf0f1;
   text-decoration: none;
-  margin-left: 1rem;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.nav-left ul li a:hover {
+  background-color: #34495e;
+}
+
+.nav-right .logout-btn {
+  color: #ecf0f1;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: #309B90;
+  transition: background 0.3s;
+}
+
+.nav-right .logout-btn:hover {
+  background-color: #34495e;
 }
 
 h2 {
@@ -35,8 +68,8 @@ h2 {
 .card {
   background: #fff;
   border: 1px solid #ddd;
-  padding: 1.5rem;
-  width: 250px;
+  padding: 2rem;
+  width: 300px;
   text-align: center;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -47,7 +80,7 @@ h2 {
 }
 
 .card button, .card a {
-  background: maroon;
+  background: #309B90;
   color: #fff;
   padding: 0.5rem 1rem;
   border: none;
@@ -105,4 +138,11 @@ h2 {
   font-size: 0.85rem;
   color: #555;
   margin-top: 0.5rem;
+}
+
+.banner {
+  background: #41c5b8;
+  color: white;
+  text-align: center;
+  padding: 20px;
 }

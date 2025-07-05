@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 05, 2025 at 12:00 AM
+-- Generation Time: Jul 05, 2025 at 03:35 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -20,6 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `reflecto`
 --
+DROP DATABASE IF EXISTS `reflecto`;
 CREATE DATABASE IF NOT EXISTS `reflecto` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `reflecto`;
 
@@ -57,10 +58,14 @@ CREATE TABLE `courseadmin` (
 --
 
 INSERT INTO `courseadmin` (`course_admin_id`, `course_admin_name`, `email`, `faculty_name`, `password`, `faculty_id`) VALUES
-(1, 'Course Admin', 'cadmin@gmail.com', 'SCES', '', NULL),
+(1, 'Course Admin', 'cadmin@gmail.com', 'SCES', '', 2),
 (2, 'sces admin', 'sces@gmail.com', 'SCES', '', 1),
 (3, 'sbs admin', 'sbs@gmail.com', 'SBS', '', NULL),
-(4, 'Esra Can', 'esra@gmail.com', NULL, '', 1);
+(4, 'Esra Can', 'esra@gmail.com', NULL, '', 1),
+(5, 'Karanja George', 'george@gmail.com', 'SCES', '', 3),
+(6, 'Olekera Oluol', 'oluol@gmail.com', NULL, '', 4),
+(7, 'Harry James', 'james@strathmore.edu', NULL, '', 5),
+(8, 'Maya Jama', 'jama@sgmail.com', NULL, '', 6);
 
 -- --------------------------------------------------------
 
@@ -79,7 +84,12 @@ CREATE TABLE `faculty` (
 --
 
 INSERT INTO `faculty` (`faculty_id`, `faculty_name`) VALUES
-(1, 'SCES');
+(1, 'SCES'),
+(2, 'SBS'),
+(3, 'SLS'),
+(4, 'SIMS'),
+(5, 'SHSS'),
+(6, 'STH');
 
 -- --------------------------------------------------------
 
@@ -125,7 +135,13 @@ CREATE TABLE `lecturers` (
 --
 
 INSERT INTO `lecturers` (`lecturer_id`, `user_id`, `first_name`, `last_name`, `email`, `faculty_name`, `course_taught`, `password`, `faculty_id`, `profile_photo`, `unit_taught`, `verification_status`, `profile_completed`) VALUES
-(1, 17, '', '', '', 'SCES', 'BBIT, ICS, BCOM', '', NULL, NULL, 'BBT2301, ICS3201, BCOM2105, BBT1101', 'approved', 1);
+(1, 17, '', '', '', 'SCES', 'BBIT, ICS, BCOM', '', NULL, NULL, 'BBT2301, ICS3201, BCOM2105, BBT1101', 'approved', 1),
+(2, 24, '', '', '', '', 'BCOM, BFS, BBIT, ICS', '', NULL, NULL, 'BBT3201, ICS2105, BFS1103, BCOM4102', 'approved', 1),
+(3, 23, '', '', '', '', 'SLS', '', NULL, NULL, 'SLS2103, SLS3302, SLS1102, SLS4105', 'approved', 1),
+(4, 22, '', '', '', '', 'BBSAS, BBSFS, BBIT', '', NULL, NULL, 'BSAS2104, BSFS1205, BBT3201', 'approved', 1),
+(5, 20, '', '', '', NULL, 'BCOM, BHM, BSc.SDS', '', NULL, NULL, 'HLE2203, HLE2103, HLE3105, HLE3205', 'approved', 1),
+(6, 30, '', '', '', '', 'BCOM, BBIT, BICS', '', NULL, NULL, 'BCOM2105, BBT4203, BCS2302', 'approved', 1),
+(7, 29, '', '', '', '', 'BBIT, BCOM', '', NULL, NULL, 'BBT2301, BCOM3301', 'approved', 1);
 
 -- --------------------------------------------------------
 
@@ -145,7 +161,19 @@ CREATE TABLE `lecturer_faculties` (
 --
 
 INSERT INTO `lecturer_faculties` (`lecturer_faculty_id`, `lecturer_id`, `faculty_id`) VALUES
-(1, 1, 1);
+(1, 1, 1),
+(2, 2, 1),
+(3, 2, 2),
+(4, 3, 3),
+(5, 4, 1),
+(6, 4, 4),
+(7, 5, 2),
+(8, 5, 5),
+(9, 5, 6),
+(10, 6, 1),
+(11, 6, 2),
+(12, 7, 1),
+(13, 7, 2);
 
 -- --------------------------------------------------------
 
@@ -174,7 +202,7 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`student_id`, `user_id`, `first_name`, `last_name`, `email`, `faculty_name`, `student_course`, `year_of_study`, `password`, `faculty_id`, `profile_photo`, `status`) VALUES
-(1, 19, '', '', '', NULL, NULL, 0, '', 1, NULL, 'pending');
+(1, 19, '', '', '', NULL, 'BCOM', 0, '', 2, NULL, 'approved');
 
 -- --------------------------------------------------------
 
@@ -227,9 +255,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `firstName`, `lastName`, `email`, `password`, `role`, `status`) VALUES
-(1, 'Jane ', 'Doe', 'example@gmail.com', '$2y$10$xg5m3r8J9IQHGVprvp66Nu4E7UAq1/m8Vs.WBLcHBjoisUsILYwXO', 1, 'pending'),
+(1, 'Jane ', 'Doe', 'example@gmail.com', '$2y$10$xg5m3r8J9IQHGVprvp66Nu4E7UAq1/m8Vs.WBLcHBjoisUsILYwXO', 1, 'approved'),
 (2, 'Amina', 'Hassan', 'example2@gmail.com', '$2y$10$V5kWz39CZB6AaN90r1vtaeKUpe5blEcu04PUN2sCXa5Y/jcqDYEPC', 2, 'approved'),
-(3, 'Mellisa', 'James', 'mlissa@gmail.com', '$2y$10$wO71VcVcEpZA3SpTi3FoOuqgDfyzRn2EAlH1oAt0GtVjGVcgSNdLG', 1, 'pending'),
+(3, 'Mellisa', 'James', 'mlissa@gmail.com', '$2y$10$wO71VcVcEpZA3SpTi3FoOuqgDfyzRn2EAlH1oAt0GtVjGVcgSNdLG', 1, 'approved'),
 (4, 'example', 'three', 'example3@gmail.com', '$2y$10$0pn.0AwxfAwUeGX/0VRE6.eIELDkoWfZejhB.YkvlOiystKb4DhxS', 1, 'pending'),
 (5, 'ejany', 'jane', 'ej@gmail.com', '$2y$10$ibwvSP0i2V5SWsOwMX7.tuIaD4CwJtU8XeL5zdz9LfwOmXchCPbUa', 3, 'rejected'),
 (6, 'try', 'one', 'try@gmail.com', '$2y$10$G59pL/PJGgNBGuyk6SKnqeXfKKwaEIGz5RKuz7zwQaeZwGaBmFT0i', 1, 'pending'),
@@ -245,7 +273,18 @@ INSERT INTO `users` (`user_id`, `firstName`, `lastName`, `email`, `password`, `r
 (16, 'sbs', 'admin', 'sbs@gmail.com', '$2y$10$WHhWau.AB6H9dk/NKsSpAuTzT2BKDfuPy/4bOUWU4taVxFnBi/rzi', 3, 'approved'),
 (17, 'lec', 'one', 'lecone@gmail.com', '$2y$10$zbpM4JIdKZKWVorXPbB5.e0kCp6SYzUpyaX/otczNKd4jvLVwTnyS', 2, 'approved'),
 (18, 'Esra', 'Can', 'esra@gmail.com', '$2y$10$9gc.WhHjrs7olo0UZcFJSOhqnj0knF6IrfT/fdUHi0M8QoVWwnIqS', 3, 'approved'),
-(19, 'student', 'one', 'student@gmail.com', '$2y$10$wJxj5qOmE9o8r0R9HTRdcuZJBfsgE8VhahcpskZGgwP4ggXfM2AES', 1, 'approved');
+(19, 'student', 'one', 'student@gmail.com', '$2y$10$wJxj5qOmE9o8r0R9HTRdcuZJBfsgE8VhahcpskZGgwP4ggXfM2AES', 1, 'approved'),
+(20, 'David ', 'Wamoyo', 'wamoyo@strathmore.edu', '$2y$10$yQ5YXONuxtuwSy9XQYQGKuU0zHNZ13hj31wD71RtE/nVAu.lIY5mS', 2, 'approved'),
+(21, 'Janice', 'Seko', 'seko@gmail.com', '$2y$10$T9iuZIOHnB7GP4.GIvbZiupNKQluOVzAPWaqxQ5KZc3tzIXdR0YdO', 2, 'approved'),
+(22, 'Albert', 'Ojwang', 'ojwang@gmail.com', '$2y$10$OWdp/OE.9vyXgsbWHlq4H.fWEr7t9lZJavo7yV1Oyuzb/3UxG0sFW', 2, 'approved'),
+(23, 'Mike', 'Muchiri', 'muchiri@gmail.com', '$2y$10$nckuC90XQu39oc6jPsLv/uZ9nyWA2U.Jil1hYhBgsigbGTHHdQp/q', 2, 'approved'),
+(24, 'Mitchelle', 'Mali', 'mali@gmail.com', '$2y$10$rEWyv9pSVrU1sNX0dTZZ0uEshrGXKCe.ukIFVzpRxLfHkN4pzExbS', 2, 'approved'),
+(25, 'Olekera', 'Oluol', 'oluol@gmail.com', '$2y$10$IkpSXpgjoqKegH37KFvQV.AyBpmmVpIGSRRpLeZOYKkGpJ6W.RkK.', 3, 'approved'),
+(26, 'Maya', 'Jama', 'jama@sgmail.com', '$2y$10$kcOYYcgiSjBV5fzFMJRmg.2QM2OLTfCBLiUgF17E22L1./1HRv/EG', 3, 'approved'),
+(27, 'Harry', 'James', 'james@strathmore.edu', '$2y$10$FDnZiunO5frSmmdBUfw/gOMRd2fMq7y5TKfudfTzoQJ7RssbpQ30a', 3, 'approved'),
+(28, 'Karanja', 'George', 'george@gmail.com', '$2y$10$4GZBch.4.MgVW8Cs6XnrbOvMYJyTDItXBiHPrWLUEgijVThoNb7.O', 3, 'approved'),
+(29, 'Mukami', 'Muthoni', 'muthoni@gmail.com', '$2y$10$SW7aZVl/.qSr85AH6RtZzuDUnwI0tnSevCgPVknV35oELMIYC3Cwm', 2, 'approved'),
+(30, 'Shanice', 'Yappa', 'yappa@gmail.com', '$2y$10$wyCasru/exhrxwdfOGOM4u5uY354KTnoEd7o.rerjcxrphIM9DY.u', 2, 'approved');
 
 --
 -- Indexes for dumped tables
@@ -282,7 +321,8 @@ ALTER TABLE `feedback`
 -- Indexes for table `lecturers`
 --
 ALTER TABLE `lecturers`
-  ADD PRIMARY KEY (`lecturer_id`);
+  ADD PRIMARY KEY (`lecturer_id`),
+  ADD KEY `fk_lecturers_faculty` (`faculty_id`);
 
 --
 -- Indexes for table `lecturer_faculties`
@@ -334,13 +374,13 @@ ALTER TABLE `course`
 -- AUTO_INCREMENT for table `courseadmin`
 --
 ALTER TABLE `courseadmin`
-  MODIFY `course_admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `course_admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `faculty`
 --
 ALTER TABLE `faculty`
-  MODIFY `faculty_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `faculty_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `feedback`
@@ -352,13 +392,13 @@ ALTER TABLE `feedback`
 -- AUTO_INCREMENT for table `lecturers`
 --
 ALTER TABLE `lecturers`
-  MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `lecturer_faculties`
 --
 ALTER TABLE `lecturer_faculties`
-  MODIFY `lecturer_faculty_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `lecturer_faculty_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `students`
@@ -370,7 +410,7 @@ ALTER TABLE `students`
 -- AUTO_INCREMENT for table `student_updates`
 --
 ALTER TABLE `student_updates`
-  MODIFY `update_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `update_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `systemadmin`
@@ -382,7 +422,7 @@ ALTER TABLE `systemadmin`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- Constraints for dumped tables
@@ -399,6 +439,12 @@ ALTER TABLE `course`
 --
 ALTER TABLE `courseadmin`
   ADD CONSTRAINT `courseadmin_ibfk_1` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`);
+
+--
+-- Constraints for table `lecturers`
+--
+ALTER TABLE `lecturers`
+  ADD CONSTRAINT `fk_lecturers_faculty` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `lecturer_faculties`

@@ -60,21 +60,22 @@ if (!empty($student['faculty_id'])) {
       <a href="signin.php" class="logout-btn">Log Out</a>
     </div>
   </nav>
-
+<div class="banner">
   <h2>Welcome, <?= htmlspecialchars($student['firstName']) ?>!</h2>
+  </div>
   <p>Faculty: <?= htmlspecialchars($facultyName) ?> | Course: <?= htmlspecialchars($student['student_course']) ?></p>
   <p>Status: <?= htmlspecialchars($student['status']) ?></p>
 
   <div class="cards-container">
     <!-- View Profile Card -->
     <div class="card">
-      <h3>View/Update Profile</h3>
+      <h3>View and Update Profile</h3>
       <button id="openProfileBtn">View Profile</button>
     </div>
     <!-- Submit Personalized Feedback -->
     <div class="card">
       <h3>Submit Personalized Feedback</h3>
-      <a href="personalized_feedback.php" class="card-btn">Go</a>
+      <a href="student_feedback.php" class="card-btn">Go</a>
     </div>
     <!-- Fill Feedback Form -->
     <div class="card">

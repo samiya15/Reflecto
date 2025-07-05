@@ -16,10 +16,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_id'])) {
         // Update students table
         $updateStmt = $conn->prepare("
             UPDATE students
-            SET faculty_id = ?, student_course = ?
+            SET faculty_id = ?, student_course = ?, status = 'approved'
             WHERE user_id = ?
         ");
-        $updateStmt->bind_param("isi", $update['faculty_id'], $update['course_name'], $update['user_id']);
+        $updateStmt->bind_param("isi", $update['faculty_id'], $update['student_course'], $update['user_id']);
         $updateStmt->execute();
 
         // Delete pending update

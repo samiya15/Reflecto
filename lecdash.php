@@ -81,8 +81,17 @@ $data = $result->fetch_assoc();
         <input type="email" name="email" value="<?= htmlspecialchars($data['email']) ?>" readonly>
       </div>
       <div class="input-group">
-        <label>Faculty</label>
-        <input type="text" name="faculty_name" value="<?= htmlspecialchars($data['faculty_name']) ?>" required>
+       <label>Faculty</label>
+  <select name="faculty_id" required>
+    <option value="">Select Faculty</option>
+    <?php
+    // Load faculties
+    $facQuery = $conn->query("SELECT faculty_id, faculty_name FROM faculty ORDER BY faculty_name");
+    while ($fac = $facQuery->fetch_assoc()):
+    ?>
+      <option value="<?= $fac['faculty_id'] ?>"><?= htmlspecialchars($fac['faculty_name']) ?></option>
+    <?php endwhile; ?>
+  </select>
       </div>
       <div class="input-group">
         <label>Courses Taught</label>
