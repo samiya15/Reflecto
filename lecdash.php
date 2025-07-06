@@ -62,7 +62,7 @@ $data = $result->fetch_assoc();
   <div class="card">
     <h3>View Submissions</h3>
     <p>Review your submitted work.</p>
-    <button onclick="window.location.href='view_submissions.php'">View Submissions</button>
+    <button onclick="window.location.href='lecturer_feedback.php'">View Submissions</button>
   </div>
 </div>
 

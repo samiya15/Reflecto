@@ -91,61 +91,82 @@ $lecResult = $lecStmt->get_result();
       <div id="result" style="margin-top: 20px;"></div>
     </div>
   </div>
-
   <script>
-    let isAnonymous = false;
+let isAnonymous = false;
 
-    function openFeedbackForm(lecturerId) {
-      document.getElementById("lecturer_id").value = lecturerId;
-      document.getElementById("feedbackModal").style.display = "block";
-    }
+function openFeedbackForm(lecturerId) {
+  document.getElementById("lecturer_id").value = lecturerId;
+  document.getElementById("feedbackModal").style.display = "block";
+}
 
-    document.getElementsByClassName("closeBtn")[0].onclick = function() {
-      document.getElementById("feedbackModal").style.display = "none";
-    };
+document.getElementsByClassName("closeBtn")[0].onclick = function() {
+  document.getElementById("feedbackModal").style.display = "none";
+};
 
-    window.onclick = function(event) {
-      if (event.target == document.getElementById("feedbackModal")) {
-        document.getElementById("feedbackModal").style.display = "none";
-      }
-    };
+window.onclick = function(event) {
+  if (event.target == document.getElementById("feedbackModal")) {
+    document.getElementById("feedbackModal").style.display = "none";
+  }
+};
 
-    document.getElementById("anonymous-btn").addEventListener("click", function(e) {
-      e.preventDefault();
-      isAnonymous = true;
-      submitFeedback();
+document.getElementById("anonymous-btn").addEventListener("click", function(e) {
+  e.preventDefault();
+  isAnonymous = true;
+  submitFeedback();
+});
+
+document.getElementById("detailed-btn").addEventListener("click", function(e) {
+  e.preventDefault();
+  isAnonymous = false;
+  submitFeedback();
+});
+
+async function submitFeedback() {
+  const message = document.getElementById("feedback").value;
+  const lecturerId = document.getElementById("lecturer_id").value;
+
+  try {
+    // 1. Call FastAPI to analyze
+    const apiResponse = await fetch("http://127.0.0.1:8000/feedback/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: message,
+        is_anonymous: isAnonymous
+      })
     });
 
-    document.getElementById("detailed-btn").addEventListener("click", function(e) {
-      e.preventDefault();
-      isAnonymous = false;
-      submitFeedback();
+    const apiData = await apiResponse.json();
+
+    // 2. Send to PHP to store
+    const saveResponse = await fetch("save_feedback.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        lecturer_id: lecturerId,
+        original_text: message,
+        cleaned_text: apiData.cleaned_text,
+        sentiment: apiData.sentiment,
+        confidence_score: apiData.confidence_score,
+        contains_profanity: apiData.contains_profanity ? 1 : 0,
+        is_anonymous: isAnonymous
+      })
     });
 
-    async function submitFeedback() {
-      const message = document.getElementById("feedback").value;
-      const lecturerId = document.getElementById("lecturer_id").value;
+    const saveData = await saveResponse.json();
 
-      try {
-        const response = await fetch("http://127.0.0.1:8000/feedback/analyze", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: message,
-            lecturer_id: lecturerId,
-            is_anonymous: isAnonymous
-          })
-        });
-
-        const data = await response.json();
-        document.getElementById("result").innerHTML = `
-          <p style="color:green;"><strong>Thank you!</strong> Your feedback has been submitted successfully.</p>
-        `;
-      } catch (error) {
-        console.error("Error:", error);
-        document.getElementById("result").innerHTML = `<p style="color:red;">Failed to connect to backend.</p>`;
-      }
+    if (saveData.success) {
+      document.getElementById("result").innerHTML = `
+        <p style="color:green;"><strong>Thank you!</strong> Your feedback has been submitted successfully.</p>
+      `;
+    } else {
+      document.getElementById("result").innerHTML = `<p style="color:red;">Failed to save feedback.</p>`;
     }
-  </script>
+  } catch (error) {
+    console.error("Error:", error);
+    document.getElementById("result").innerHTML = `<p style="color:red;">Error occurred.</p>`;
+  }
+}
+</script>
 </body>
 </html>
