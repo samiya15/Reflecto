@@ -42,7 +42,7 @@ $stmt = $conn->prepare("
 ");
 
 $stmt->bind_param(
-    "isssddi",
+    "iisssdi",
     $user_id,
     $data["lecturer_id"],
     $data["original_text"],

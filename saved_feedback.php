@@ -10,24 +10,21 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 2) {
 
 $user_id = $_SESSION['user_id'];
 
-// Get this lecturer's ID
+// Get lecturer_id
 $stmt = $conn->prepare("SELECT lecturer_id FROM lecturers WHERE user_id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $lecturer = $result->fetch_assoc();
-
 if (!$lecturer) {
     echo "Lecturer record not found.";
     exit();
 }
-
 $lecturer_id = $lecturer['lecturer_id'];
 
-// Fetch feedback
+// Fetch saved feedback
 $feedbackStmt = $conn->prepare("
     SELECT 
-        f.feedback_id,
         f.cleaned_text,
         f.created_at,
         f.is_anonymous,
@@ -38,12 +35,13 @@ $feedbackStmt = $conn->prepare("
         s.student_course,
         s.year_of_study,
         fa.faculty_name
-    FROM feedback f
+    FROM feedback_archive fa
+    JOIN feedback f ON fa.feedback_id = f.feedback_id
     LEFT JOIN users u ON f.user_id = u.user_id
     LEFT JOIN students s ON f.user_id = s.user_id
     LEFT JOIN faculty fa ON s.faculty_id = fa.faculty_id
-    WHERE f.lecturer_id = ?
-    ORDER BY f.created_at DESC
+    WHERE fa.lecturer_id = ?
+    ORDER BY fa.saved_at DESC
 ");
 $feedbackStmt->bind_param("i", $lecturer_id);
 $feedbackStmt->execute();
@@ -53,7 +51,7 @@ $feedbackResult = $feedbackStmt->get_result();
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Lecturer Feedback</title>
+  <title>Saved Feedback</title>
   <link rel="stylesheet" href="lecturer_feedback.css" />
 </head>
 <body>
@@ -61,24 +59,23 @@ $feedbackResult = $feedbackStmt->get_result();
     <div class="nav-left">
       <a href="lecdash.php">Dashboard</a>
       <a href="lecturer_feedback.php">Recent Feedback</a>
-      <a href="saved_feedback.php">Saved Feedback</a>
     </div>
     <div class="nav-right">
       <a href="signin.php" class="logout-btn">Log Out</a>
     </div>
   </nav>
 
-  <h2>Feedback Received</h2>
+  <h2>Saved Feedback Archive</h2>
 
   <div class="feedback-container">
     <?php if ($feedbackResult->num_rows === 0): ?>
-      <p>No feedback submitted yet.</p>
+      <p>No saved feedback.</p>
     <?php else: ?>
       <?php while ($fb = $feedbackResult->fetch_assoc()): ?>
         <div class="feedback-card">
           <p><strong>Submitted on:</strong> <?= htmlspecialchars(date("F j, Y, g:i a", strtotime($fb['created_at']))) ?></p>
           <p><strong>Feedback:</strong> <?= nl2br(htmlspecialchars($fb['cleaned_text'])) ?></p>
-          <p><strong>Sentiment:</strong> <?= htmlspecialchars($fb['sentiment']) ?> (<?= htmlspecialchars($fb['confidence_score']) ?>)</p>
+          <p><strong>Sentiment:</strong> <?= htmlspecialchars($fb['sentiment']) ?> (Score: <?= htmlspecialchars($fb['confidence_score']) ?>)</p>
           <?php if ($fb['is_anonymous']): ?>
             <p><em>This feedback was submitted anonymously.</em></p>
           <?php else: ?>
@@ -87,46 +84,9 @@ $feedbackResult = $feedbackStmt->get_result();
             <p><strong>Year:</strong> <?= htmlspecialchars($fb['year_of_study']) ?></p>
             <p><strong>Faculty:</strong> <?= htmlspecialchars($fb['faculty_name']) ?></p>
           <?php endif; ?>
-          <div class="button-group">
-            <form method="post" action="process_feedback_action.php" style="display:inline;">
-              <input type="hidden" name="feedback_id" value="<?= $fb['feedback_id'] ?>">
-              <button type="submit" name="action" value="save">Save Feedback</button>
-            </form>
-            <button onclick="openResponseModal(<?= $fb['feedback_id'] ?>)">Respond</button>
-          </div>
         </div>
       <?php endwhile; ?>
     <?php endif; ?>
   </div>
-
-  <!-- Response Modal -->
-  <div id="responseModal" class="modal">
-    <div class="modal-content">
-      <span class="closeBtn">&times;</span>
-      <h3>Send Response</h3>
-      <form method="post" action="submit_feedback_response.php">
-        <input type="hidden" id="response_feedback_id" name="feedback_id">
-        <textarea name="response_text" required placeholder="Type your response here..."></textarea>
-        <button type="submit">Send Response</button>
-      </form>
-    </div>
-  </div>
-
-<script>
-  function openResponseModal(feedbackId) {
-    document.getElementById("response_feedback_id").value = feedbackId;
-    document.getElementById("responseModal").style.display = "block";
-  }
-
-  document.querySelector(".closeBtn").onclick = function() {
-    document.getElementById("responseModal").style.display = "none";
-  };
-
-  window.onclick = function(event) {
-    if (event.target == document.getElementById("responseModal")) {
-      document.getElementById("responseModal").style.display = "none";
-    }
-  };
-</script>
 </body>
 </html>
