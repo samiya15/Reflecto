@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 05, 2025 at 03:35 PM
+-- Generation Time: Jul 07, 2025 at 11:22 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -101,11 +101,82 @@ DROP TABLE IF EXISTS `feedback`;
 CREATE TABLE `feedback` (
   `id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `feedback_text` text NOT NULL,
-  `sentiment` varchar(20) DEFAULT NULL,
-  `has_profanity` tinyint(1) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `lecturer_id` int(11) NOT NULL,
+  `original_text` text NOT NULL,
+  `cleaned_text` text NOT NULL,
+  `sentiment` enum('positive','neutral','negative') NOT NULL,
+  `confidence_score` float DEFAULT NULL,
+  `contains_profanity` tinyint(1) DEFAULT NULL,
+  `is_anonymous` tinyint(4) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `responded` tinyint(4) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `feedback`
+--
+
+INSERT INTO `feedback` (`id`, `user_id`, `lecturer_id`, `original_text`, `cleaned_text`, `sentiment`, `confidence_score`, `contains_profanity`, `is_anonymous`, `created_at`, `responded`) VALUES
+(16, 19, 6, 'thanks', 'thanks', 'positive', 0.44, 0, 0, '2025-07-07 20:08:46', 1),
+(19, NULL, 6, 'i hate you', 'i hate you', 'negative', -0.57, 0, 1, '2025-07-07 21:09:04', 0),
+(20, 30, 6, 'i hate you', 'i hate you', 'negative', -0.57, 0, 0, '2025-07-07 21:20:01', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `feedback_archive`
+--
+
+DROP TABLE IF EXISTS `feedback_archive`;
+CREATE TABLE `feedback_archive` (
+  `archive_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `lecturer_id` int(11) NOT NULL,
+  `feedback_id` int(11) NOT NULL,
+  `original_text` text DEFAULT NULL,
+  `cleaned_text` text DEFAULT NULL,
+  `sentiment` varchar(20) DEFAULT NULL,
+  `confidence_score` float DEFAULT NULL,
+  `contains_profanity` tinyint(1) DEFAULT NULL,
+  `reviewed_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `response_text` text DEFAULT NULL,
+  `is_anonymous` tinyint(4) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `feedback_archive`
+--
+
+INSERT INTO `feedback_archive` (`archive_id`, `user_id`, `lecturer_id`, `feedback_id`, `original_text`, `cleaned_text`, `sentiment`, `confidence_score`, `contains_profanity`, `reviewed_at`, `response_text`, `is_anonymous`) VALUES
+(9, 19, 6, 16, 'thanks', 'thanks', 'positive', 0.44, 0, '2025-07-07 21:17:59', NULL, 0),
+(10, NULL, 6, 19, 'i hate you', 'i hate you', 'negative', -0.57, 0, '2025-07-07 21:18:11', NULL, 1),
+(11, 30, 6, 20, 'i hate you', 'i hate you', 'negative', -0.57, 0, '2025-07-07 21:20:19', NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `feedback_responses`
+--
+
+DROP TABLE IF EXISTS `feedback_responses`;
+CREATE TABLE `feedback_responses` (
+  `response_id` int(11) NOT NULL,
+  `feedback_id` int(11) NOT NULL,
+  `lecturer_id` int(11) NOT NULL,
+  `response_text` text NOT NULL,
+  `responded_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `viewed_by_student` tinyint(1) DEFAULT 0,
+  `is_anoymous` tinyint(4) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `feedback_responses`
+--
+
+INSERT INTO `feedback_responses` (`response_id`, `feedback_id`, `lecturer_id`, `response_text`, `responded_at`, `viewed_by_student`, `is_anoymous`) VALUES
+(6, 16, 6, 'your welcome', '2025-07-07 20:09:06', 0, 0),
+(7, 16, 6, 'your welcome', '2025-07-07 20:10:38', 0, 0),
+(8, 16, 6, 'THANKS', '2025-07-07 20:10:49', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -315,7 +386,25 @@ ALTER TABLE `faculty`
 -- Indexes for table `feedback`
 --
 ALTER TABLE `feedback`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_feedback_user` (`user_id`),
+  ADD KEY `fk_feedback_lecturer` (`lecturer_id`);
+
+--
+-- Indexes for table `feedback_archive`
+--
+ALTER TABLE `feedback_archive`
+  ADD PRIMARY KEY (`archive_id`),
+  ADD KEY `lecturer_id` (`lecturer_id`),
+  ADD KEY `fk_feedback_id` (`feedback_id`);
+
+--
+-- Indexes for table `feedback_responses`
+--
+ALTER TABLE `feedback_responses`
+  ADD PRIMARY KEY (`response_id`),
+  ADD KEY `fk_response_feedback` (`feedback_id`),
+  ADD KEY `fk_response_lecturer` (`lecturer_id`);
 
 --
 -- Indexes for table `lecturers`
@@ -386,7 +475,19 @@ ALTER TABLE `faculty`
 -- AUTO_INCREMENT for table `feedback`
 --
 ALTER TABLE `feedback`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `feedback_archive`
+--
+ALTER TABLE `feedback_archive`
+  MODIFY `archive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `feedback_responses`
+--
+ALTER TABLE `feedback_responses`
+  MODIFY `response_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `lecturers`
@@ -439,6 +540,27 @@ ALTER TABLE `course`
 --
 ALTER TABLE `courseadmin`
   ADD CONSTRAINT `courseadmin_ibfk_1` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`);
+
+--
+-- Constraints for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD CONSTRAINT `fk_feedback_lecturer` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturers` (`lecturer_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_feedback_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `feedback_archive`
+--
+ALTER TABLE `feedback_archive`
+  ADD CONSTRAINT `feedback_archive_ibfk_1` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturers` (`lecturer_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_feedback_id` FOREIGN KEY (`feedback_id`) REFERENCES `feedback` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `feedback_responses`
+--
+ALTER TABLE `feedback_responses`
+  ADD CONSTRAINT `fk_response_feedback` FOREIGN KEY (`feedback_id`) REFERENCES `feedback` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_response_lecturer` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturers` (`lecturer_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `lecturers`

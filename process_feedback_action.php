@@ -2,21 +2,17 @@
 session_start();
 include("include/dbconnect.php");
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $action = $_POST["action"] ?? "";
-    $feedback_id = intval($_POST["feedback_id"]);
-    $response_text = trim($_POST["response_text"] ?? "");
+// Ensure lecturer is logged in
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 2) {
+    header("Location: signin.php");
+    exit();
+}
 
-    if (!$feedback_id) {
-        die("Invalid feedback ID.");
-    }
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "save") {
+    $feedback_id = $_POST["id"];
 
-    // Get the feedback record to move or respond
-    $stmt = $conn->prepare("
-        SELECT *
-        FROM feedback
-        WHERE feedback_id = ?
-    ");
+    // Step 1: Fetch original feedback
+    $stmt = $conn->prepare("SELECT * FROM feedback WHERE id = ?");
     $stmt->bind_param("i", $feedback_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -26,94 +22,41 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         die("Feedback not found.");
     }
 
-    if ($action === "save") {
-        // Insert into saved_feedback
-        $insert = $conn->prepare("
-          INSERT INTO feedback_archive
-(
-    user_id,
-    lecturer_id,
-    original_text,
-    cleaned_text,
-    sentiment,
-    confidence_score,
-    contains_profanity
-)
-VALUES (?, ?, ?, ?, ?, ?, ?)
+    // Step 2: Archive it
+    $insert = $conn->prepare("
+        INSERT INTO feedback_archive (
+            user_id,
+            lecturer_id,
+            original_text,
+            cleaned_text,
+            sentiment,
+            confidence_score,
+            contains_profanity,
+            is_anonymous,
+            reviewed_at,
+            feedback_id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?)
+    ");
 
-        ");
-        $insert->bind_param("iisssdi",
-            $feedback["user_id"],
-            $feedback["lecturer_id"],
-            $feedback["original_text"],
-            $feedback["cleaned_text"],
-            $feedback["sentiment"],
-            $feedback["confidence_score"],
-            $feedback["contains_profanity"]
+    $insert->bind_param(
+        "iisssdiii",
+        $feedback['user_id'],
+        $feedback['lecturer_id'],
+        $feedback['original_text'],
+        $feedback['cleaned_text'],
+        $feedback['sentiment'],
+        $feedback['confidence_score'],
+        $feedback['contains_profanity'],
+        $feedback['is_anonymous'],
+        $feedback['id']  // reference back to original
+    );
 
-        );
-        $insert->execute();
-
-        // Delete from feedback
-        $delete = $conn->prepare("DELETE FROM feedback WHERE feedback_id = ?");
-        $delete->bind_param("i", $feedback_id);
-        $delete->execute();
-
-        header("Location: lecturer_feedback.php");
-        exit();
+    if ($insert->execute()) {
+        echo "<script>alert('Feedback archived successfully'); window.location.href='lecturer_feedback.php';</script>";
+    } else {
+        echo "Failed to archive: " . $conn->error;
     }
-
-    if ($action === "respond") {
-        if (empty($response_text)) {
-            die("Response text cannot be empty.");
-        }
-
-        // Optionally, save response somewhere else (e.g., lecturer_responses table)
-        $insertResponse = $conn->prepare("
-            INSERT INTO lecturer_responses (
-                feedback_id,
-                response_text,
-                responded_at
-            ) VALUES (?, ?, NOW())
-        ");
-        $insertResponse->bind_param("is", $feedback_id, $response_text);
-        $insertResponse->execute();
-
-        // Insert into saved_feedback
-        $insert = $conn->prepare("
-            INSERT INTO feedback_archive (
-                user_id,
-                lecturer_id,
-                original_text,
-                cleaned_text,
-                sentiment,
-                confidence_score,
-                contains_profanity,
-                created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-        $insert->bind_param(
-            "iisssdis",
-            $feedback["user_id"],
-            $feedback["lecturer_id"],
-            $feedback["original_text"],
-            $feedback["cleaned_text"],
-            $feedback["sentiment"],
-            $feedback["confidence_score"],
-            $feedback["contains_profanity"],
-            $feedback["created_at"]
-        );
-        $insert->execute();
-
-        // Delete from feedback
-        $delete = $conn->prepare("DELETE FROM feedback WHERE feedback_id = ?");
-        $delete->bind_param("i", $feedback_id);
-        $delete->execute();
-
-        header("Location: lecturer_feedback.php");
-        exit();
-    }
-
-    die("Invalid action.");
+} else {
+    echo "Invalid action.";
 }
 ?>

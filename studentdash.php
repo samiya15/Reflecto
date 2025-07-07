@@ -83,6 +83,11 @@ if (!empty($student['faculty_id'])) {
       <a href="feedback_form.php" class="card-btn">Go</a>
     </div>
   </div>
+   <div class="card">
+      <h3>View Feedback responses</h3>
+      <a href="student_view_responses.php" class="card-btn">Go</a>
+    </div>
+  </div>
 
   <!-- Modal Popup -->
   <div id="profileModal" class="modal">

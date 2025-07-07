@@ -24,25 +24,29 @@ $lecturer_id = $lecturer['lecturer_id'];
 
 // Fetch saved feedback
 $feedbackStmt = $conn->prepare("
-    SELECT 
-        f.cleaned_text,
-        f.created_at,
-        f.is_anonymous,
-        f.sentiment,
-        f.confidence_score,
-        u.firstName,
-        u.lastName,
-        s.student_course,
-        s.year_of_study,
-        fa.faculty_name
-    FROM feedback_archive fa
-    JOIN feedback f ON fa.feedback_id = f.feedback_id
-    LEFT JOIN users u ON f.user_id = u.user_id
-    LEFT JOIN students s ON f.user_id = s.user_id
-    LEFT JOIN faculty fa ON s.faculty_id = fa.faculty_id
-    WHERE fa.lecturer_id = ?
-    ORDER BY fa.saved_at DESC
+   SELECT 
+    fa.cleaned_text,
+    fa.reviewed_at,
+    fa.is_anonymous,
+    fa.sentiment,
+    fa.confidence_score,
+    u.firstName,
+    u.lastName,
+    s.student_course,
+    s.year_of_study,
+    fac.faculty_name
+FROM feedback_archive fa
+LEFT JOIN users u ON fa.user_id = u.user_id
+LEFT JOIN students s ON fa.user_id = s.user_id
+LEFT JOIN faculty fac ON s.faculty_id = fac.faculty_id
+WHERE fa.lecturer_id = ?
+ORDER BY fa.reviewed_at DESC
+
 ");
+if (!$feedbackStmt) {
+    die("SQL prepare failed: " . $conn->error);
+}
+
 $feedbackStmt->bind_param("i", $lecturer_id);
 $feedbackStmt->execute();
 $feedbackResult = $feedbackStmt->get_result();
@@ -73,9 +77,9 @@ $feedbackResult = $feedbackStmt->get_result();
     <?php else: ?>
       <?php while ($fb = $feedbackResult->fetch_assoc()): ?>
         <div class="feedback-card">
-          <p><strong>Submitted on:</strong> <?= htmlspecialchars(date("F j, Y, g:i a", strtotime($fb['created_at']))) ?></p>
+          <p><strong>Reviewed:</strong> <?= htmlspecialchars(date("F j, Y, g:i a", strtotime($fb['reviewed_at']))) ?></p>
           <p><strong>Feedback:</strong> <?= nl2br(htmlspecialchars($fb['cleaned_text'])) ?></p>
-          <p><strong>Sentiment:</strong> <?= htmlspecialchars($fb['sentiment']) ?> (Score: <?= htmlspecialchars($fb['confidence_score']) ?>)</p>
+          <p><strong>Sentiment:</strong> <?= htmlspecialchars($fb['sentiment']) ?></p>
           <?php if ($fb['is_anonymous']): ?>
             <p><em>This feedback was submitted anonymously.</em></p>
           <?php else: ?>
