@@ -45,6 +45,12 @@
       <p>Review and approve changes submitted by students.</p>
       <button onclick="location.href='manage_student_updates.php'">Review Updates</button>
     </div>
+    <div class="card">
+      <h3>Update Profanity Logs</h3>
+      <p>Add profanity to the dictionary </p>
+      <button onclick="location.href='http://127.0.0.1:8000/docs'">update Profanity</button>
+    </div>
+
 
 </body>
 </html>
