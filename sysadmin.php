@@ -39,6 +39,16 @@
   <p>Create, edit, and delete faculties.</p>
   <button onclick="location.href='manage_faculties.php'">Manage Faculties</button>
 </div>
+<div class="card">
+  <h3>Manage Courses</h3>
+  <p>Create, edit, and delete courses under faculties.</p>
+  <button onclick="location.href='manage_courses.php'">Manage Courses</button>
+</div>
+<div class="card">
+  <h3>Manage Units</h3>
+  <p>Create, edit, and delete units under courses.</p>
+  <button onclick="location.href='manage_units.php'">Manage Units</button>
+</div>
     <!-- Card: Approve Student Profile Updates -->
     <div class="card">
       <h3>Pending Student Profile Updates</h3>

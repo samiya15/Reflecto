@@ -10,12 +10,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch student details
+// Fetch student details, including course ID and course name
 $stmt = $conn->prepare("
-    SELECT s.faculty_id, s.student_course, s.status,
-           u.firstName, u.lastName, u.email
+    SELECT s.faculty_id, s.course_id, s.status, s.year_of_study,
+           u.firstName, u.lastName, u.email,
+           c.course_name
     FROM students s
     JOIN users u ON s.user_id = u.user_id
+    JOIN course c ON s.course_id = c.course_id
     WHERE s.user_id = ?
 ");
 $stmt->bind_param("i", $user_id);
@@ -23,13 +25,13 @@ $stmt->execute();
 $result = $stmt->get_result();
 $student = $result->fetch_assoc();
 
-// If no faculty yet (first login), force them to fill profile
+// If no faculty yet (first login), force profile completion
 if (empty($student['faculty_id'])) {
     header("Location: student_complete_profile.php");
     exit();
 }
 
-// Get faculty name for display
+// Get faculty name
 $facultyName = "Unknown";
 if (!empty($student['faculty_id'])) {
     $fstmt = $conn->prepare("SELECT faculty_name FROM faculty WHERE faculty_id = ?");
@@ -40,7 +42,20 @@ if (!empty($student['faculty_id'])) {
         $facultyName = $frow['faculty_name'];
     }
 }
+
+// Fetch units based on student's course ID and year
+$courseId = $student['course_id'];
+$year = $student['year_of_study'];
+
+$unitStmt = $conn->prepare("SELECT u.unit_name
+    FROM units u
+    WHERE u.course_id = ? AND u.year_of_study = ?
+");
+$unitStmt->bind_param("ii", $courseId, $year);
+$unitStmt->execute();
+$unitResult = $unitStmt->get_result();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,10 +75,12 @@ if (!empty($student['faculty_id'])) {
       <a href="signin.php" class="logout-btn">Log Out</a>
     </div>
   </nav>
-<div class="banner">
-  <h2>Welcome, <?= htmlspecialchars($student['firstName']) ?>!</h2>
+
+  <div class="banner">
+    <h2>Welcome, <?= htmlspecialchars($student['firstName']) ?>!</h2>
   </div>
-  <p>Faculty: <?= htmlspecialchars($facultyName) ?> | Course: <?= htmlspecialchars($student['student_course']) ?></p>
+
+  <p>Faculty: <?= htmlspecialchars($facultyName) ?> | Course: <?= htmlspecialchars($student['student_course']) ?> | Year: <?= htmlspecialchars($year) ?></p>
   <p>Status: <?= htmlspecialchars($student['status']) ?></p>
 
   <div class="cards-container">
@@ -72,20 +89,49 @@ if (!empty($student['faculty_id'])) {
       <h3>View and Update Profile</h3>
       <button id="openProfileBtn">View Profile</button>
     </div>
+
     <!-- Submit Personalized Feedback -->
     <div class="card">
       <h3>Submit Personalized Feedback</h3>
       <a href="student_feedback.php" class="card-btn">Go</a>
     </div>
+
     <!-- Fill Feedback Form -->
     <div class="card">
       <h3>Fill Feedback Form</h3>
       <a href="feedback_form.php" class="card-btn">Go</a>
     </div>
-  </div>
-   <div class="card">
-      <h3>View Feedback responses</h3>
+
+    <!-- View Lecturer Responses -->
+    <div class="card">
+      <h3>View Feedback Responses</h3>
       <a href="student_view_responses.php" class="card-btn">Go</a>
+    </div>
+
+    <!-- Display My Units -->
+    <div class="card full-width">
+      <h3>My Units (Year <?= htmlspecialchars($year) ?>)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Unit Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php 
+          $count = 1;
+          while ($unit = $unitResult->fetch_assoc()): ?>
+            <tr>
+              <td><?= $count++ ?></td>
+              <td><?= htmlspecialchars($unit['unit_name']) ?></td>
+            </tr>
+          <?php endwhile; ?>
+          <?php if ($count === 1): ?>
+            <tr><td colspan="2">No units found for your year and course.</td></tr>
+          <?php endif; ?>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -107,24 +153,47 @@ if (!empty($student['faculty_id'])) {
           <label>Email</label>
           <input type="email" name="email" value="<?= htmlspecialchars($student['email']) ?>" readonly>
         </div>
+
         <div class="input-group">
-  <label>Faculty</label>
-  <select name="faculty_id" required>
-    <option value="">Select Faculty</option>
+          <label>Faculty</label>
+          <select name="faculty_id" required>
+            <option value="">Select Faculty</option>
+            <?php
+            $facQuery = $conn->query("SELECT faculty_id, faculty_name FROM faculty ORDER BY faculty_name");
+            while ($fac = $facQuery->fetch_assoc()):
+            ?>
+              <option value="<?= $fac['faculty_id'] ?>" <?= $student['faculty_id'] == $fac['faculty_id'] ? 'selected' : '' ?>>
+                <?= htmlspecialchars($fac['faculty_name']) ?>
+              </option>
+            <?php endwhile; ?>
+          </select>
+        </div>
+
+        <div class="input-group">
+  <label>Course</label>
+  <select name="course_id" required>
+    <option value="">Select Course</option>
     <?php
-    // Load faculties
-    $facQuery = $conn->query("SELECT faculty_id, faculty_name FROM faculty ORDER BY faculty_name");
-    while ($fac = $facQuery->fetch_assoc()):
+    $coQuery = $conn->query("SELECT course_id, course_name FROM course ORDER BY course_name");
+    while ($course = $coQuery->fetch_assoc()):
     ?>
-      <option value="<?= $fac['faculty_id'] ?>"><?= htmlspecialchars($fac['faculty_name']) ?></option>
+      <option value="<?= $course['course_id'] ?>" <?= $student['course_id'] == $course['course_id'] ? 'selected' : '' ?>>
+        <?= htmlspecialchars($course['course_name']) ?>
+      </option>
     <?php endwhile; ?>
   </select>
 </div>
 
         <div class="input-group">
-          <label>Course</label>
-          <input type="text" name="course_name" value="<?= htmlspecialchars($student['student_course']) ?>" required>
+          <label>Year of Study</label>
+          <select name="year_of_study" required>
+            <option value="1" <?= $year == 1 ? 'selected' : '' ?>>Year 1</option>
+            <option value="2" <?= $year == 2 ? 'selected' : '' ?>>Year 2</option>
+            <option value="3" <?= $year == 3 ? 'selected' : '' ?>>Year 3</option>
+            <option value="4" <?= $year == 4 ? 'selected' : '' ?>>Year 4</option>
+          </select>
         </div>
+
         <button type="submit">Update Profile</button>
       </form>
       <p class="note">*Updates will require system admin approval.</p>
