@@ -80,7 +80,7 @@ $unitResult = $unitStmt->get_result();
     <h2>Welcome, <?= htmlspecialchars($student['firstName']) ?>!</h2>
   </div>
 
-  <p>Faculty: <?= htmlspecialchars($facultyName) ?> | Course: <?= htmlspecialchars($student['student_course']) ?> | Year: <?= htmlspecialchars($year) ?></p>
+  <p>Faculty: <?= htmlspecialchars($facultyName) ?> | Course: <?= htmlspecialchars($student['course_name']) ?> | Year: <?= htmlspecialchars($year) ?></p>
   <p>Status: <?= htmlspecialchars($student['status']) ?></p>
 
   <div class="cards-container">

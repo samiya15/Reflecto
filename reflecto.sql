@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 07, 2025 at 11:22 PM
+-- Generation Time: Jul 10, 2025 at 04:16 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,7 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `reflecto`
 --
-DROP DATABASE IF EXISTS `reflecto`;
 CREATE DATABASE IF NOT EXISTS `reflecto` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `reflecto`;
 
@@ -36,6 +35,13 @@ CREATE TABLE `course` (
   `faculty_id` int(11) NOT NULL,
   `course_name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `course`
+--
+
+INSERT INTO `course` (`course_id`, `faculty_id`, `course_name`) VALUES
+(1, 2, 'BCOM');
 
 -- --------------------------------------------------------
 
@@ -265,15 +271,16 @@ CREATE TABLE `students` (
   `password` varchar(255) NOT NULL,
   `faculty_id` int(11) DEFAULT NULL,
   `profile_photo` varchar(255) DEFAULT NULL,
-  `status` enum('pending','approved','rejected') DEFAULT 'pending'
+  `status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `unit_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`student_id`, `user_id`, `first_name`, `last_name`, `email`, `faculty_name`, `student_course`, `year_of_study`, `password`, `faculty_id`, `profile_photo`, `status`) VALUES
-(1, 19, '', '', '', NULL, 'BCOM', 0, '', 2, NULL, 'approved');
+INSERT INTO `students` (`student_id`, `user_id`, `first_name`, `last_name`, `email`, `faculty_name`, `student_course`, `year_of_study`, `password`, `faculty_id`, `profile_photo`, `status`, `unit_id`) VALUES
+(8, 31, '', '', '', NULL, '', 0, '', NULL, NULL, 'pending', NULL);
 
 -- --------------------------------------------------------
 
@@ -303,6 +310,27 @@ CREATE TABLE `systemadmin` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `units`
+--
+
+DROP TABLE IF EXISTS `units`;
+CREATE TABLE `units` (
+  `unit_id` int(11) NOT NULL,
+  `unit_name` varchar(255) NOT NULL,
+  `course_id` int(11) DEFAULT NULL,
+  `year_of_study` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `units`
+--
+
+INSERT INTO `units` (`unit_id`, `unit_name`, `course_id`, `year_of_study`) VALUES
+(1, 'Introduction to Accounting', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -355,7 +383,8 @@ INSERT INTO `users` (`user_id`, `firstName`, `lastName`, `email`, `password`, `r
 (27, 'Harry', 'James', 'james@strathmore.edu', '$2y$10$FDnZiunO5frSmmdBUfw/gOMRd2fMq7y5TKfudfTzoQJ7RssbpQ30a', 3, 'approved'),
 (28, 'Karanja', 'George', 'george@gmail.com', '$2y$10$4GZBch.4.MgVW8Cs6XnrbOvMYJyTDItXBiHPrWLUEgijVThoNb7.O', 3, 'approved'),
 (29, 'Mukami', 'Muthoni', 'muthoni@gmail.com', '$2y$10$SW7aZVl/.qSr85AH6RtZzuDUnwI0tnSevCgPVknV35oELMIYC3Cwm', 2, 'approved'),
-(30, 'Shanice', 'Yappa', 'yappa@gmail.com', '$2y$10$wyCasru/exhrxwdfOGOM4u5uY354KTnoEd7o.rerjcxrphIM9DY.u', 2, 'approved');
+(30, 'Shanice', 'Yappa', 'yappa@gmail.com', '$2y$10$wyCasru/exhrxwdfOGOM4u5uY354KTnoEd7o.rerjcxrphIM9DY.u', 2, 'approved'),
+(31, 'Samiya', 'Abdullahi', 'sami@gmail.com', '$2y$10$OArrShXLuczZu3yAgXeNQOxB2l3ebWI6e.hu/zwmFnTK9S2SiqSj2', 1, 'approved');
 
 --
 -- Indexes for dumped tables
@@ -426,7 +455,9 @@ ALTER TABLE `lecturer_faculties`
 --
 ALTER TABLE `students`
   ADD PRIMARY KEY (`student_id`),
-  ADD KEY `fk_students_faculty` (`faculty_id`);
+  ADD KEY `fk_students_faculty` (`faculty_id`),
+  ADD KEY `fk_unit_id` (`unit_id`),
+  ADD KEY `fk_user_id` (`user_id`);
 
 --
 -- Indexes for table `student_updates`
@@ -443,6 +474,13 @@ ALTER TABLE `systemadmin`
   ADD UNIQUE KEY `email` (`email`);
 
 --
+-- Indexes for table `units`
+--
+ALTER TABLE `units`
+  ADD PRIMARY KEY (`unit_id`),
+  ADD KEY `course_id` (`course_id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -457,7 +495,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `course`
 --
 ALTER TABLE `course`
-  MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `courseadmin`
@@ -505,7 +543,7 @@ ALTER TABLE `lecturer_faculties`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `student_updates`
@@ -520,10 +558,16 @@ ALTER TABLE `systemadmin`
   MODIFY `system_admin_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `units`
+--
+ALTER TABLE `units`
+  MODIFY `unit_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- Constraints for dumped tables
@@ -579,13 +623,22 @@ ALTER TABLE `lecturer_faculties`
 -- Constraints for table `students`
 --
 ALTER TABLE `students`
-  ADD CONSTRAINT `fk_students_faculty` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_students_faculty` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_unit` FOREIGN KEY (`unit_id`) REFERENCES `units` (`unit_id`),
+  ADD CONSTRAINT `fk_unit_id` FOREIGN KEY (`unit_id`) REFERENCES `units` (`unit_id`),
+  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `student_updates`
 --
 ALTER TABLE `student_updates`
   ADD CONSTRAINT `student_updates_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `units`
+--
+ALTER TABLE `units`
+  ADD CONSTRAINT `units_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

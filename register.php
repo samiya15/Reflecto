@@ -104,9 +104,9 @@ if ($row['role'] == 1) {
 
     if ($studentResult->num_rows === 0) {
         // Insert a record with no faculty and pending status
-        $insertStudent = $conn->prepare("INSERT INTO students (user_id, faculty_id, student_course, status)
-            VALUES (?, NULL, '', 'pending')
-        ");
+       $insertStudent = $conn->prepare("INSERT INTO students (user_id, faculty_id, student_course, unit_id, status)
+    VALUES (?, NULL, '', NULL, 'pending')
+");
          if (!$insertStudent) {
         die("Prepare failed: " . $conn->error);
     }

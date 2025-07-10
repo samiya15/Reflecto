@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         } else {
             // Proceed with update
             $update = $conn->prepare("UPDATE students
-                SET faculty_id = ?, course_id = ?, year_of_study = ?, status = 'pending'
+                SET faculty_id = ?, course_id = ?, year_of_study = ?
                 WHERE user_id = ?
             ");
             $update->bind_param("iiii", $faculty_id, $course_id, $year_of_study, $user_id);
@@ -117,7 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </select>
       </div>
 
-      <button type="submit" onclick="this.innerText='Submitting...'; this.disabled=true;">Submit Profile</button>
+      <button type="submit" >Submit Profile</button>
     </form>
   </div>
 
