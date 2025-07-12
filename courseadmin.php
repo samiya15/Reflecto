@@ -70,6 +70,12 @@ $admin_data = $admin_result->fetch_assoc();
       <button>Manage Courses</button>
     </div>
     <div class="card">
+  <h3>Upload Feedback Forms</h3><br>
+  <p>Create and assign  feedback forms.</p>
+  <a href="upload_feedback_form.php" class="button-link">Upload Form</a>
+</div>
+
+    <div class="card">
       <h3>Reports</h3><br>
       <p>Generate and download activity reports.</p>
       <button>View Reports</button>

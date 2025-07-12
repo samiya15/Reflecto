@@ -64,6 +64,12 @@ $data = $result->fetch_assoc();
     <p>Review your submitted work.</p>
     <button onclick="window.location.href='lecturer_feedback.php'">View Submissions</button>
   </div>
+  
+  <div class="card">
+    <h3>Feedback Forms</h3>
+    <p>Upload feedback forms to students.</p>
+    <button onclick="window.location.href='lecturer_approve_forms.php'">View Submissions</button>
+  </div>
 </div>
 
 <!-- Modal (hidden by default) -->
