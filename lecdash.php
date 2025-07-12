@@ -10,19 +10,51 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 2) {
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch lecturer info
-$stmt = $conn->prepare("
-    SELECT l.faculty_name, l.course_taught, l.unit_taught, l.verification_status,
-           u.firstName, u.lastName, u.email
-    FROM lecturers l
-    JOIN users u ON l.user_id = u.user_id
-    WHERE l.user_id = ?
-");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$data = $result->fetch_assoc();
+// Fetch basic user info
+$userStmt = $conn->prepare("SELECT firstName, lastName, email FROM users WHERE user_id = ?");
+$userStmt->bind_param("i", $user_id);
+$userStmt->execute();
+$userResult = $userStmt->get_result();
+$userData = $userResult->fetch_assoc();
+
+// Fetch verification status
+$statusStmt = $conn->prepare("SELECT verification_status FROM lecturers WHERE user_id = ?");
+$statusStmt->bind_param("i", $user_id);
+$statusStmt->execute();
+$statusResult = $statusStmt->get_result();
+$profileData = $statusResult->fetch_assoc();
+
+// Fetch multiple faculties
+$faculties = [];
+$facQuery = $conn->prepare("SELECT f.faculty_name FROM lecturer_faculties lf JOIN faculty f ON lf.faculty_id = f.faculty_id WHERE lf.lecturer_id = ?");
+$facQuery->bind_param("i", $user_id);
+$facQuery->execute();
+$facResult = $facQuery->get_result();
+while ($row = $facResult->fetch_assoc()) {
+    $faculties[] = $row['faculty_name'];
+}
+
+// Fetch multiple courses
+$courses = [];
+$courseQuery = $conn->prepare("SELECT c.course_name FROM lecturer_courses lc JOIN course c ON lc.course_id = c.course_id WHERE lc.lecturer_id = ?");
+$courseQuery->bind_param("i", $user_id);
+$courseQuery->execute();
+$courseResult = $courseQuery->get_result();
+while ($row = $courseResult->fetch_assoc()) {
+    $courses[] = $row['course_name'];
+}
+
+// Fetch multiple units
+$units = [];
+$unitQuery = $conn->prepare("SELECT u.unit_name FROM lecturer_units lu JOIN units u ON lu.unit_id = u.unit_id WHERE lu.lecturer_id = ?");
+$unitQuery->bind_param("i", $user_id);
+$unitQuery->execute();
+$unitResult = $unitQuery->get_result();
+while ($row = $unitResult->fetch_assoc()) {
+    $units[] = $row['unit_name'];
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,7 +67,7 @@ $data = $result->fetch_assoc();
 <nav class="navbar">
   <div class="nav-left">
     <ul>
-    <li><a href="lecdash.php">Dashboard</a></li>
+      <li><a href="lecdash.php">Dashboard</a></li>
     </ul>
   </div>
   <div class="nav-right">
@@ -43,9 +75,9 @@ $data = $result->fetch_assoc();
   </div>
 </nav>
 
- <div class="banner">
-    <h2>Welcome, <?= htmlspecialchars($data['firstName']) ?> <?= htmlspecialchars($data['lastName']) ?></h2>
-  </div>
+<div class="banner">
+  <h2>Welcome, <?= htmlspecialchars($userData['firstName']) ?> <?= htmlspecialchars($userData['lastName']) ?></h2>
+</div>
 
 <div class="dashboard">
   <div class="card">
@@ -56,7 +88,7 @@ $data = $result->fetch_assoc();
 
   <div class="card">
     <h3>Status</h3>
-    <p>Your verification status is: <strong><?= htmlspecialchars($data['verification_status']) ?></strong></p>
+    <p>Your verification status is: <strong><?= htmlspecialchars($profileData['verification_status']) ?></strong></p>
   </div>
 
   <div class="card">
@@ -64,15 +96,42 @@ $data = $result->fetch_assoc();
     <p>Review your submitted work.</p>
     <button onclick="window.location.href='lecturer_feedback.php'">View Submissions</button>
   </div>
-  
+
   <div class="card">
     <h3>Feedback Forms</h3>
     <p>Upload feedback forms to students.</p>
-    <button onclick="window.location.href='lecturer_approve_forms.php'">View Submissions</button>
+    <button onclick="window.location.href='lecturer_recieve_feedback.php'">View Forms</button>
+  </div>
+
+  <div class="card">
+    <h3>Your Faculties</h3>
+    <ul>
+      <?php foreach ($faculties as $faculty): ?>
+        <li><?= htmlspecialchars($faculty) ?></li>
+      <?php endforeach; ?>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Your Courses</h3>
+    <ul>
+      <?php foreach ($courses as $course): ?>
+        <li><?= htmlspecialchars($course) ?></li>
+      <?php endforeach; ?>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Your Units</h3>
+    <ul>
+      <?php foreach ($units as $unit): ?>
+        <li><?= htmlspecialchars($unit) ?></li>
+      <?php endforeach; ?>
+    </ul>
   </div>
 </div>
 
-<!-- Modal (hidden by default) -->
+<!-- Modal -->
 <div id="profileModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
@@ -80,32 +139,11 @@ $data = $result->fetch_assoc();
     <form action="update_lec_profile.php" method="post">
       <div class="input-group">
         <label>Name</label>
-        <input type="text" name="name" value="<?= htmlspecialchars($data['firstName'] . ' ' . $data['lastName']) ?>" readonly>
+        <input type="text" name="name" value="<?= htmlspecialchars($userData['firstName'] . ' ' . $userData['lastName']) ?>" readonly>
       </div>
       <div class="input-group">
         <label>Email</label>
-        <input type="email" name="email" value="<?= htmlspecialchars($data['email']) ?>" readonly>
-      </div>
-      <div class="input-group">
-       <label>Faculty</label>
-  <select name="faculty_id" required>
-    <option value="">Select Faculty</option>
-    <?php
-    // Load faculties
-    $facQuery = $conn->query("SELECT faculty_id, faculty_name FROM faculty ORDER BY faculty_name");
-    while ($fac = $facQuery->fetch_assoc()):
-    ?>
-      <option value="<?= $fac['faculty_id'] ?>"><?= htmlspecialchars($fac['faculty_name']) ?></option>
-    <?php endwhile; ?>
-  </select>
-      </div>
-      <div class="input-group">
-        <label>Courses Taught</label>
-        <textarea name="course_taught" required><?= htmlspecialchars($data['course_taught']) ?></textarea>
-      </div>
-      <div class="input-group">
-        <label>Units Taught</label>
-        <textarea name="unit_taught" required><?= htmlspecialchars($data['unit_taught']) ?></textarea>
+        <input type="email" name="email" value="<?= htmlspecialchars($userData['email']) ?>" readonly>
       </div>
       <button type="submit" class="save-btn">Save Changes</button>
     </form>
@@ -113,22 +151,18 @@ $data = $result->fetch_assoc();
 </div>
 
 <script>
-// Elements
 const updateProfileBtn = document.getElementById("updateProfileBtn");
 const modal = document.getElementById("profileModal");
 const closeBtn = document.querySelector(".close");
 
-// Show modal
 updateProfileBtn.onclick = () => {
   modal.style.display = "flex";
 };
 
-// Close modal when clicking the X
 closeBtn.onclick = () => {
   modal.style.display = "none";
 };
 
-// Close modal when clicking outside the modal-content
 window.onclick = (e) => {
   if (e.target === modal) {
     modal.style.display = "none";

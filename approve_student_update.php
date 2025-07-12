@@ -13,16 +13,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_id'])) {
     $update = $result->fetch_assoc();
 
     if ($update) {
-        // Update students table
+        // ✅ Update the students table with correct columns
         $updateStmt = $conn->prepare("
             UPDATE students
-            SET faculty_id = ?, student_course = ?, status = 'approved'
+            SET faculty_id = ?, course_id = ?, status = 'approved'
             WHERE user_id = ?
         ");
-        $updateStmt->bind_param("isi", $update['faculty_id'], $update['student_course'], $update['user_id']);
+        $updateStmt->bind_param("iii", $update['faculty_id'], $update['course_id'], $update['user_id']);
         $updateStmt->execute();
 
-        // Delete pending update
+        // ✅ Delete the pending update from student_updates
         $deleteStmt = $conn->prepare("DELETE FROM student_updates WHERE update_id = ?");
         $deleteStmt->bind_param("i", $update_id);
         $deleteStmt->execute();
