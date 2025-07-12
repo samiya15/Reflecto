@@ -10,6 +10,20 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 2) {
 
 $user_id = $_SESSION['user_id'];
 
+// Get lecturer_id using user_id
+$lecturerStmt = $conn->prepare("SELECT lecturer_id FROM lecturers WHERE user_id = ?");
+$lecturerStmt->bind_param("i", $user_id);
+$lecturerStmt->execute();
+$lecturerResult = $lecturerStmt->get_result();
+$lecturerRow = $lecturerResult->fetch_assoc();
+
+if (!$lecturerRow) {
+    echo "Lecturer profile not found.";
+    exit();
+}
+
+$lecturer_id = $lecturerRow['lecturer_id'];
+
 // Fetch basic user info
 $userStmt = $conn->prepare("SELECT firstName, lastName, email FROM users WHERE user_id = ?");
 $userStmt->bind_param("i", $user_id);
@@ -24,30 +38,30 @@ $statusStmt->execute();
 $statusResult = $statusStmt->get_result();
 $profileData = $statusResult->fetch_assoc();
 
-// Fetch multiple faculties
+// Fetch faculties
 $faculties = [];
 $facQuery = $conn->prepare("SELECT f.faculty_name FROM lecturer_faculties lf JOIN faculty f ON lf.faculty_id = f.faculty_id WHERE lf.lecturer_id = ?");
-$facQuery->bind_param("i", $user_id);
+$facQuery->bind_param("i", $lecturer_id);
 $facQuery->execute();
 $facResult = $facQuery->get_result();
 while ($row = $facResult->fetch_assoc()) {
     $faculties[] = $row['faculty_name'];
 }
 
-// Fetch multiple courses
+// Fetch courses
 $courses = [];
 $courseQuery = $conn->prepare("SELECT c.course_name FROM lecturer_courses lc JOIN course c ON lc.course_id = c.course_id WHERE lc.lecturer_id = ?");
-$courseQuery->bind_param("i", $user_id);
+$courseQuery->bind_param("i", $lecturer_id);
 $courseQuery->execute();
 $courseResult = $courseQuery->get_result();
 while ($row = $courseResult->fetch_assoc()) {
     $courses[] = $row['course_name'];
 }
 
-// Fetch multiple units
+// Fetch units
 $units = [];
 $unitQuery = $conn->prepare("SELECT u.unit_name FROM lecturer_units lu JOIN units u ON lu.unit_id = u.unit_id WHERE lu.lecturer_id = ?");
-$unitQuery->bind_param("i", $user_id);
+$unitQuery->bind_param("i", $lecturer_id);
 $unitQuery->execute();
 $unitResult = $unitQuery->get_result();
 while ($row = $unitResult->fetch_assoc()) {

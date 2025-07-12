@@ -10,35 +10,28 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch the student's course
-$stmt = $conn->prepare("
-    SELECT s.student_course, f.faculty_id
-    FROM students s
-    JOIN faculty f ON s.faculty_id = f.faculty_id
-    WHERE s.user_id = ?
-");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$student = $result->fetch_assoc();
+// Get the student's course ID and year of study
+$studentStmt = $conn->prepare("SELECT course_id, year_of_study FROM students WHERE user_id = ?");
+$studentStmt->bind_param("i", $user_id);
+$studentStmt->execute();
+$studentResult = $studentStmt->get_result();
+$student = $studentResult->fetch_assoc();
 
-if (!$student) {
-    echo "Student record not found.";
-    exit();
-}
+$course_id = $student['course_id'];
+$year_of_study = $student['year_of_study'];
 
-$course = $student['student_course'];
-$faculty_id = $student['faculty_id'];
-
-// Fetch lecturers teaching this course
-$lecStmt = $conn->prepare("
-    SELECT l.lecturer_id, l.course_taught, l.unit_taught, u.firstName, u.lastName, u.email
+$lecStmt = $conn->prepare(" SELECT DISTINCT l.lecturer_id, u.firstName, u.lastName, u.email, 
+           un.unit_name AS unit_taught, c.course_name
     FROM lecturers l
     JOIN users u ON l.user_id = u.user_id
-    JOIN lecturer_faculties lf ON l.lecturer_id = lf.lecturer_id
-    WHERE lf.faculty_id = ?
+    JOIN lecturer_units lu ON l.lecturer_id = lu.lecturer_id
+    JOIN units un ON lu.unit_id = un.unit_id
+    JOIN lecturer_courses lc ON l.lecturer_id = lc.lecturer_id
+    JOIN course c ON lc.course_id = c.course_id
+    WHERE lc.course_id = ? AND un.year_of_study = ?
 ");
-$lecStmt->bind_param("i", $faculty_id);
+
+$lecStmt->bind_param("ii", $course_id, $year_of_study);
 $lecStmt->execute();
 $lecResult = $lecStmt->get_result();
 ?>
@@ -66,7 +59,7 @@ $lecResult = $lecStmt->get_result();
       <div class="card" onclick="openFeedbackForm(<?= htmlspecialchars($lec['lecturer_id']) ?>)">
         <h3><?= htmlspecialchars($lec['firstName'] . ' ' . $lec['lastName']) ?></h3>
         <p>Email: <?= htmlspecialchars($lec['email']) ?></p>
-        <p>Course: <?= htmlspecialchars($lec['course_taught']) ?></p>
+        <p>Course: <?= htmlspecialchars($lec['course_name']) ?></p>
         <p>Unit: <?= htmlspecialchars($lec['unit_taught']) ?></p>
       </div>
     <?php endwhile; ?>
@@ -126,7 +119,6 @@ async function submitFeedback() {
   const lecturerId = document.getElementById("lecturer_id").value;
 
   try {
-    // 1. Call FastAPI to analyze
     const apiResponse = await fetch("http://127.0.0.1:8000/feedback/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -138,7 +130,6 @@ async function submitFeedback() {
 
     const apiData = await apiResponse.json();
 
-    // 2. Send to PHP to store
     const saveResponse = await fetch("save_feedback.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -156,9 +147,7 @@ async function submitFeedback() {
     const saveData = await saveResponse.json();
 
     if (saveData.success) {
-      document.getElementById("result").innerHTML = `
-        <p style="color:green;"><strong>Thank you!</strong> Your feedback has been submitted successfully.</p>
-      `;
+      document.getElementById("result").innerHTML = `<p style="color:green;"><strong>Thank you!</strong> Your feedback has been submitted successfully.</p>`;
     } else {
       document.getElementById("result").innerHTML = `<p style="color:red;">Failed to save feedback.</p>`;
     }
