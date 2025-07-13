@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+better_profanity
+vaderSentiment
+python-multipart
+pydantic

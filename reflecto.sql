@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 13, 2025 at 01:51 PM
+-- Generation Time: Jul 13, 2025 at 05:03 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,7 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `reflecto`
 --
-DROP DATABASE IF EXISTS `reflecto`;
 CREATE DATABASE IF NOT EXISTS `reflecto` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `reflecto`;
 
@@ -222,7 +221,11 @@ CREATE TABLE `feedback_forms` (
 INSERT INTO `feedback_forms` (`form_id`, `title`, `faculty_id`, `created_by`, `created_at`) VALUES
 (1, 'end of sem', 2, 10, '2025-07-12 16:35:22'),
 (2, 'end of sem', 2, 10, '2025-07-12 16:38:13'),
-(3, 'example', 1, 15, '2025-07-13 00:05:55');
+(3, 'example', 1, 15, '2025-07-13 00:05:55'),
+(4, 'END OF SEMESTER EVALUATION', 2, 10, '2025-07-13 14:57:42'),
+(5, 'END OF SEMESTER EVALUATION', 1, 15, '2025-07-13 14:58:41'),
+(6, 'testing', 2, 10, '2025-07-13 17:39:55'),
+(7, 'testing profanity', 1, 15, '2025-07-13 17:40:29');
 
 -- --------------------------------------------------------
 
@@ -250,7 +253,19 @@ INSERT INTO `feedback_questions` (`question_id`, `template_id`, `question_text`,
 (4, NULL, 'how do you like the course', 'scale', 3),
 (5, NULL, 'class start and end on time', 'scale', 3),
 (6, NULL, 'im happy with the teaching method', 'scale', 3),
-(7, NULL, 'Anything you want to change?', 'text', 3);
+(7, NULL, 'Anything you want to change?', 'text', 3),
+(8, NULL, 'how do you like the course', 'scale', 4),
+(9, NULL, 'class start and end on time', 'scale', 4),
+(10, NULL, 'im happy with the teaching method', 'scale', 4),
+(11, NULL, 'Anything you want to change?', 'text', 4),
+(12, NULL, 'the material for the course is helpful', 'scale', 5),
+(13, NULL, 'class start and end on time', 'scale', 5),
+(14, NULL, 'im happy with the teaching method', 'scale', 5),
+(15, NULL, 'Anything you want to change?', 'text', 5),
+(16, NULL, 'the material for the course is helpful', 'scale', 6),
+(17, NULL, 'Anything you want to change?', 'text', 6),
+(18, NULL, 'the material for the course is helpful', 'scale', 7),
+(19, NULL, 'Anything you want to change?', 'text', 7);
 
 -- --------------------------------------------------------
 
@@ -306,21 +321,33 @@ CREATE TABLE `form_responses` (
   `student_id` int(11) NOT NULL,
   `response_text` text NOT NULL,
   `submitted_at` datetime DEFAULT current_timestamp(),
-  `unit_id` int(11) NOT NULL
+  `unit_id` int(11) NOT NULL,
+  `sentiment` varchar(255) NOT NULL,
+  `cleaned_text` varchar(255) NOT NULL,
+  `confidence_score` float NOT NULL,
+  `contains_profanity` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `form_responses`
 --
 
-INSERT INTO `form_responses` (`response_id`, `form_id`, `question_id`, `student_id`, `response_text`, `submitted_at`, `unit_id`) VALUES
-(1, 3, 4, 31, '4', '2025-07-13 14:46:24', 3),
-(2, 3, 5, 31, '5', '2025-07-13 14:46:24', 3),
-(3, 3, 6, 31, '4', '2025-07-13 14:46:24', 3),
-(4, 3, 7, 31, 'no', '2025-07-13 14:46:24', 3),
-(5, 3, 8, 31, '5', '2025-07-13 14:46:24', 3),
-(6, 3, 9, 31, 'none', '2025-07-13 14:46:24', 3),
-(7, 3, 10, 31, 'none', '2025-07-13 14:46:24', 3);
+INSERT INTO `form_responses` (`response_id`, `form_id`, `question_id`, `student_id`, `response_text`, `submitted_at`, `unit_id`, `sentiment`, `cleaned_text`, `confidence_score`, `contains_profanity`) VALUES
+(1, 3, 4, 31, '4', '2025-07-13 14:46:24', 3, '', '', 0, 0),
+(2, 3, 5, 31, '5', '2025-07-13 14:46:24', 3, '', '', 0, 0),
+(3, 3, 6, 31, '4', '2025-07-13 14:46:24', 3, '', '', 0, 0),
+(4, 3, 7, 31, 'no', '2025-07-13 14:46:24', 3, '', '', 0, 0),
+(5, 3, 8, 31, '5', '2025-07-13 14:46:24', 3, '', '', 0, 0),
+(6, 3, 9, 31, 'none', '2025-07-13 14:46:24', 3, '', '', 0, 0),
+(7, 3, 10, 31, 'none', '2025-07-13 14:46:24', 3, '', '', 0, 0),
+(8, 5, 11, 31, '5', '2025-07-13 15:17:44', 2, '', '', 0, 0),
+(9, 3, 4, 31, '5', '2025-07-13 15:51:48', 2, '', '', 0, 0),
+(10, 3, 5, 31, '4', '2025-07-13 15:51:48', 2, '', '', 0, 0),
+(11, 3, 6, 31, '5', '2025-07-13 15:51:48', 2, '', '', 0, 0),
+(12, 3, 7, 31, 'no', '2025-07-13 15:51:48', 2, '', '', 0, 0),
+(13, 3, 8, 31, '4', '2025-07-13 15:51:48', 2, '', '', 0, 0),
+(14, 3, 9, 31, 'no', '2025-07-13 15:51:48', 2, '', '', 0, 0),
+(15, 3, 10, 31, 'no', '2025-07-13 15:51:48', 2, '', '', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -448,7 +475,11 @@ INSERT INTO `lecturer_feedback_forms` (`id`, `form_id`, `lecturer_id`, `assigned
 (6, 3, 8, 2, 2, 1, '2025-07-13 00:21:27'),
 (7, 3, 10, 2, 3, 1, '2025-07-13 13:56:53'),
 (8, 3, 8, 2, 2, 1, '2025-07-13 14:07:07'),
-(9, 3, 8, 2, 2, 1, '2025-07-13 14:17:59');
+(9, 3, 8, 2, 2, 1, '2025-07-13 14:17:59'),
+(10, 5, 8, 2, 2, 1, '2025-07-13 15:00:33'),
+(11, 3, 8, 2, 2, 1, '2025-07-13 15:51:13'),
+(12, 7, 8, 2, 2, 1, '2025-07-13 17:41:11'),
+(13, 7, 8, 2, 2, 1, '2025-07-13 17:42:18');
 
 -- --------------------------------------------------------
 
@@ -480,7 +511,9 @@ INSERT INTO `lecturer_form_questions` (`question_id`, `form_id`, `lecturer_id`, 
 (7, 3, 8, 'any point of change you wish to suggest', 'text', '2025-07-13 00:17:39'),
 (8, 3, 8, 'is the material offered for the course helpful', 'scale', '2025-07-13 00:21:27'),
 (9, 3, 8, 'any point of change you wish to suggest', 'text', '2025-07-13 00:21:27'),
-(10, 3, 8, 'are you happy', 'text', '2025-07-13 14:17:59');
+(10, 3, 8, 'are you happy', 'text', '2025-07-13 14:17:59'),
+(11, 5, 8, 'the lecturer is nice', 'scale', '2025-07-13 15:00:33'),
+(12, 7, 8, 'are you happy', 'text', '2025-07-13 17:42:18');
 
 -- --------------------------------------------------------
 
@@ -580,7 +613,8 @@ CREATE TABLE `student_units` (
 --
 
 INSERT INTO `student_units` (`id`, `student_id`, `unit_id`) VALUES
-(4, 8, 3);
+(5, 8, 2),
+(6, 8, 3);
 
 -- --------------------------------------------------------
 
@@ -619,7 +653,9 @@ CREATE TABLE `submitted_feedback` (
 --
 
 INSERT INTO `submitted_feedback` (`id`, `form_id`, `student_id`, `submitted_at`, `unit_id`) VALUES
-(11, 3, 31, '2025-07-13 14:46:24', 3);
+(11, 3, 31, '2025-07-13 14:46:24', 3),
+(12, 5, 31, '2025-07-13 15:17:44', 2),
+(13, 3, 31, '2025-07-13 15:51:48', 2);
 
 -- --------------------------------------------------------
 
@@ -960,13 +996,13 @@ ALTER TABLE `feedback_archive`
 -- AUTO_INCREMENT for table `feedback_forms`
 --
 ALTER TABLE `feedback_forms`
-  MODIFY `form_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `form_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `feedback_questions`
 --
 ALTER TABLE `feedback_questions`
-  MODIFY `question_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `question_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `feedback_responses`
@@ -984,7 +1020,7 @@ ALTER TABLE `feedback_templates`
 -- AUTO_INCREMENT for table `form_responses`
 --
 ALTER TABLE `form_responses`
-  MODIFY `response_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `response_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `lecturers`
@@ -1002,13 +1038,13 @@ ALTER TABLE `lecturer_faculties`
 -- AUTO_INCREMENT for table `lecturer_feedback_forms`
 --
 ALTER TABLE `lecturer_feedback_forms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `lecturer_form_questions`
 --
 ALTER TABLE `lecturer_form_questions`
-  MODIFY `question_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `question_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `students`
@@ -1026,7 +1062,7 @@ ALTER TABLE `student_courses`
 -- AUTO_INCREMENT for table `student_units`
 --
 ALTER TABLE `student_units`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `student_updates`
@@ -1038,7 +1074,7 @@ ALTER TABLE `student_updates`
 -- AUTO_INCREMENT for table `submitted_feedback`
 --
 ALTER TABLE `submitted_feedback`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `systemadmin`

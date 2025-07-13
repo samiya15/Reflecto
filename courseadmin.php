@@ -74,7 +74,7 @@ $admin_data = $admin_result->fetch_assoc();
     <div class="card">
       <h3>Reports</h3><br>
       <p>Generate and download activity reports.</p>
-      <button>View Reports</button>
+       <a href="courseadmin_view_summaries.php" class="button-link">View Reports</a>
     </div>
   </div>
 
