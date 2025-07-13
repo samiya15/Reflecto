@@ -115,8 +115,7 @@ if ($row['role'] == 1) {
     }
 
     // Now fetch the record to see if profile is complete
-    $profileCheck = $conn->prepare("
-        SELECT faculty_id
+    $profileCheck = $conn->prepare("SELECT faculty_id
         FROM students
         WHERE user_id = ?
     ");

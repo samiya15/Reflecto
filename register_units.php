@@ -61,24 +61,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['unit_ids'])) {
 <html>
 <head>
     <title>Register for Units</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 30px; }
-        h2 { color: #333; }
-        .form-section { margin-top: 20px; }
-        label { display: block; margin-bottom: 8px; }
-        .unit-list { margin-bottom: 20px; }
-        .unit-list label { display: block; margin-bottom: 4px; }
-        button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        button:hover { background: #45a049; }
-    </style>
+ <link rel="stylesheet" type="text/css" href="register_units.css">
+  
 </head>
 <body>
 

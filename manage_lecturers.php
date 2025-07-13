@@ -16,29 +16,35 @@ if (empty($_SESSION['faculty_id'])) {
 
 $faculty_id = $_SESSION['faculty_id'];
 
-// Fetch the faculty name for display
+// Fetch the faculty name
 $facultyName = "Unknown";
-
-if ($faculty_id) {
-    $facultyQuery = $conn->prepare("SELECT faculty_name FROM faculty WHERE faculty_id = ?");
-    $facultyQuery->bind_param("i", $faculty_id);
-    $facultyQuery->execute();
-    $facultyResult = $facultyQuery->get_result();
-    if ($facultyResult->num_rows > 0) {
-        $facultyRow = $facultyResult->fetch_assoc();
-        $facultyName = $facultyRow['faculty_name'];
-    }
+$facultyQuery = $conn->prepare("SELECT faculty_name FROM faculty WHERE faculty_id = ?");
+$facultyQuery->bind_param("i", $faculty_id);
+$facultyQuery->execute();
+$facultyResult = $facultyQuery->get_result();
+if ($facultyResult->num_rows > 0) {
+    $facultyRow = $facultyResult->fetch_assoc();
+    $facultyName = $facultyRow['faculty_name'];
 }
 
-// Fetch lecturers belonging to this faculty
+// Fetch lecturers with real courses and units
 $stmt = $conn->prepare("
-    SELECT l.lecturer_id, l.faculty_name, l.course_taught, l.unit_taught, l.verification_status, 
-           u.firstName, u.lastName, u.email 
+    SELECT 
+        l.lecturer_id, l.verification_status,
+        u.firstName, u.lastName, u.email,
+        GROUP_CONCAT(DISTINCT c.course_name SEPARATOR ', ') AS courses,
+        GROUP_CONCAT(DISTINCT un.unit_name SEPARATOR ', ') AS units
     FROM lecturers l
     JOIN users u ON l.user_id = u.user_id
     JOIN lecturer_faculties lf ON l.lecturer_id = lf.lecturer_id
+    LEFT JOIN lecturer_courses lc ON l.lecturer_id = lc.lecturer_id
+    LEFT JOIN course c ON lc.course_id = c.course_id
+    LEFT JOIN lecturer_units lu ON l.lecturer_id = lu.lecturer_id
+    LEFT JOIN units un ON lu.unit_id = un.unit_id
     WHERE lf.faculty_id = ?
+    GROUP BY l.lecturer_id
 ");
+
 if (!$stmt) {
     echo "Prepare failed: " . $conn->error;
     exit();
@@ -48,6 +54,7 @@ $stmt->bind_param("i", $faculty_id);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,8 +99,8 @@ $result = $stmt->get_result();
     <tr>
       <td><?= htmlspecialchars($lec['firstName'].' '.$lec['lastName']) ?></td>
       <td><?= htmlspecialchars($lec['email']) ?></td>
-      <td><?= htmlspecialchars($lec['course_taught']) ?></td>
-      <td><?= htmlspecialchars($lec['unit_taught']) ?></td>
+      <td><?= htmlspecialchars($lec['courses']) ?></td>
+      <td><?= htmlspecialchars($lec['units']) ?></td>
       <td><?= htmlspecialchars($lec['verification_status']) ?></td>
       <td>
         <?php if($lec['verification_status'] != 'approved'): ?>

@@ -8,41 +8,53 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
 }
 
 $user_id = $_SESSION['user_id'];
-$res = $conn->query("SELECT student_id FROM students WHERE user_id = $user_id");
-$studentRow = $res->fetch_assoc();
-$student_id = $studentRow['student_id'];
 
-// Get student courses and units
-$courses = $conn->query("SELECT course_id FROM student_courses WHERE student_id = $student_id")->fetch_all(MYSQLI_ASSOC);
-$units = $conn->query("SELECT unit_id FROM student_units WHERE student_id = $student_id")->fetch_all(MYSQLI_ASSOC);
+// Get student ID
+$studentQuery = $conn->prepare("SELECT student_id FROM students WHERE user_id = ?");
+$studentQuery->bind_param("i", $user_id);
+$studentQuery->execute();
+$studentResult = $studentQuery->get_result();
+$student = $studentResult->fetch_assoc();
+$student_id = $student['student_id'];
 
-$courseIds = array_column($courses, 'course_id');
-$unitIds = array_column($units, 'unit_id');
+// Get registered course_ids and unit_ids
+$course_ids = [];
+$unit_ids = [];
 
-if (empty($courseIds) || empty($unitIds)) {
+$courseRes = $conn->query("SELECT course_id FROM student_courses WHERE student_id = $student_id");
+while ($row = $courseRes->fetch_assoc()) {
+    $course_ids[] = $row['course_id'];
+}
+
+$unitRes = $conn->query("SELECT unit_id FROM student_units WHERE student_id = $student_id");
+while ($row = $unitRes->fetch_assoc()) {
+    $unit_ids[] = $row['unit_id'];
+}
+
+if (empty($course_ids) || empty($unit_ids)) {
     echo "No registered courses/units found.";
     exit();
 }
 
-$courseList = implode(',', array_map('intval', $courseIds));
-$unitList = implode(',', array_map('intval', $unitIds));
+$courseList = implode(",", array_map("intval", $course_ids));
+$unitList = implode(",", array_map("intval", $unit_ids));
 
-// Show only feedback forms the student hasn't submitted (per form_id + unit_id)
+// Only show forms not yet submitted by this student
 $query = $conn->query("
-  SELECT lff.form_id, lff.assigned_unit_id, ff.title, ff.created_at, c.course_name, u.unit_name
-  FROM lecturer_feedback_forms lff
-  JOIN feedback_forms ff ON lff.form_id = ff.form_id
-  JOIN course c ON lff.assigned_course_id = c.course_id
-  JOIN units u ON lff.assigned_unit_id = u.unit_id
-  WHERE lff.assigned_course_id IN ($courseList)
-    AND lff.assigned_unit_id IN ($unitList)
-    AND lff.is_published = 1
-    AND NOT EXISTS (
-        SELECT 1 FROM submitted_feedback sf
-        WHERE sf.form_id = lff.form_id
-          AND sf.unit_id = lff.assigned_unit_id
-          AND sf.student_id = $student_id
-    )
+    SELECT lff.form_id, lff.assigned_unit_id, ff.title, ff.created_at, c.course_name, u.unit_name
+    FROM lecturer_feedback_forms lff
+    JOIN feedback_forms ff ON ff.form_id = lff.form_id
+    JOIN course c ON c.course_id = lff.assigned_course_id
+    JOIN units u ON u.unit_id = lff.assigned_unit_id
+    WHERE lff.assigned_course_id IN ($courseList)
+      AND lff.assigned_unit_id IN ($unitList)
+      AND lff.is_published = 1
+      AND NOT EXISTS (
+          SELECT 1 FROM submitted_feedback sf
+          WHERE sf.form_id = lff.form_id
+            AND sf.unit_id = lff.assigned_unit_id
+            AND sf.student_id = $student_id
+      )
 ");
 
 $forms = $query->fetch_all(MYSQLI_ASSOC);
