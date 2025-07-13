@@ -99,15 +99,16 @@ while ($row = $unitResult->fetch_assoc()) {
     <p>Update your details</p>
     <button id="updateProfileBtn">Update Profile</button>
   </div>
-
-  <div class="card">
-    <h3>Status</h3>
-    <p>Your verification status is: <strong><?= htmlspecialchars($profileData['verification_status']) ?></strong></p>
+ <div class="card">
+    <h3>View Filled Forms</h3>
+    <p>Review submitted forms.</p>
+    <button onclick="window.location.href='lecturer_view_filled_forms.php'">View Forms</button>
   </div>
+>
 
   <div class="card">
     <h3>View Submissions</h3>
-    <p>Review your submitted work.</p>
+    <p>Review submitted feedback.</p>
     <button onclick="window.location.href='lecturer_feedback.php'">View Submissions</button>
   </div>
 
@@ -116,6 +117,11 @@ while ($row = $unitResult->fetch_assoc()) {
     <p>Upload feedback forms to students.</p>
     <button onclick="window.location.href='lecturer_recieve_feedback.php'">View Forms</button>
   </div>
+
+  <div class="card">
+    <h3>Status</h3>
+    <p>Your verification status is: <strong><?= htmlspecialchars($profileData['verification_status']) ?></strong></p>
+</div>
 
   <div class="card">
     <h3>Your Faculties</h3>

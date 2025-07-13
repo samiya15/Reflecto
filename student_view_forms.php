@@ -12,6 +12,7 @@ $res = $conn->query("SELECT student_id FROM students WHERE user_id = $user_id");
 $studentRow = $res->fetch_assoc();
 $student_id = $studentRow['student_id'];
 
+// Get student courses and units
 $courses = $conn->query("SELECT course_id FROM student_courses WHERE student_id = $student_id")->fetch_all(MYSQLI_ASSOC);
 $units = $conn->query("SELECT unit_id FROM student_units WHERE student_id = $student_id")->fetch_all(MYSQLI_ASSOC);
 
@@ -26,7 +27,7 @@ if (empty($courseIds) || empty($unitIds)) {
 $courseList = implode(',', array_map('intval', $courseIds));
 $unitList = implode(',', array_map('intval', $unitIds));
 
-// Show only feedback forms the student hasn't submitted (unique per form+unit)
+// Show only feedback forms the student hasn't submitted (per form_id + unit_id)
 $query = $conn->query("
   SELECT lff.form_id, lff.assigned_unit_id, ff.title, ff.created_at, c.course_name, u.unit_name
   FROM lecturer_feedback_forms lff

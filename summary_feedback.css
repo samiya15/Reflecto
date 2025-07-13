@@ -1,0 +1,95 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+    margin: 0;
+    padding: 30px;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+.question-block {
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.rating-display {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.radio-circle {
+    margin-right: 10px;
+    position: relative;
+}
+
+.radio-circle input[type="radio"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #007acc;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    cursor: default;
+}
+
+.radio-circle input[type="radio"]:checked {
+    background-color: #007acc;
+}
+
+.radio-circle span {
+    font-size: 14px;
+    margin-left: 4px;
+    position: relative;
+    top: -2px;
+}
+
+.numeric-rating {
+    margin-left: 10px;
+    font-weight: bold;
+    color: #444;
+}
+
+.text-responses {
+    margin-top: 8px;
+    padding-left: 20px;
+    list-style: disc;
+    color: #444;
+}
+
+.button-group {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.button-group button {
+    background: #007acc;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    margin: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.button-group button.back {
+    background: #777;
+}
+
+.button-group button:hover {
+    opacity: 0.9;
+}
