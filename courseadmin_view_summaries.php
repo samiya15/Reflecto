@@ -35,7 +35,7 @@ $forms = $query->get_result()->fetch_all(MYSQLI_ASSOC);
         <?php foreach ($forms as $form): ?>
             <li>
                 <?= htmlspecialchars($form['title']) ?> |
-                <a href="summary_feedback.php?form_id=<?= $form['form_id'] ?>">View Summary</a>
+                <a href="cadmin_summary_feedback.php?form_id=<?= $form['form_id'] ?>">View Summary</a>
             </li>
         <?php endforeach; ?>
     </ul>

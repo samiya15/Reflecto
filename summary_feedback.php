@@ -61,18 +61,19 @@ $questions = $conn->query("
 
             <?php else: ?>
                 <?php
-                $textRes = $conn->query("
-                    SELECT response_text
-                    FROM form_responses
-                    WHERE form_id = $form_id AND question_id = {$q['question_id']}
-                    LIMIT 3
-                ")->fetch_all(MYSQLI_ASSOC);
-                ?>
-                <ul class="text-responses">
-                    <?php foreach ($textRes as $res): ?>
-                        <li><?= htmlspecialchars($res['response_text']) ?></li>
-                    <?php endforeach; ?>
-                </ul>
+               $textRes = $conn->query("
+    SELECT cleaned_text
+    FROM form_responses
+    WHERE form_id = $form_id AND question_id = {$q['question_id']}
+    LIMIT 3
+")->fetch_all(MYSQLI_ASSOC);
+?>
+<ul class="text-responses">
+    <?php foreach ($textRes as $res): ?>
+        <li><?= htmlspecialchars($res['cleaned_text']) ?></li>
+    <?php endforeach; ?>
+</ul>
+
             <?php endif; ?>
         </div>
     <?php endforeach; ?>
