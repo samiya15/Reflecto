@@ -1,77 +1,53 @@
-/* General reset and layout */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f4f7f9;
-  margin: 0;
-  padding: 20px;
-  color: #333;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    padding: 20px;
+    text-align: center;
 }
 
 h2 {
-  text-align: center;
-  color: #2c3e50;
-  margin-bottom: 30px;
+    color: #2c3e50;
+    margin-bottom: 30px;
 }
 
-/* Cards */
 .form-card {
-  background: #ffffff;
-  border: 1px solid #e1e1e1;
-  border-radius: 10px;
-  padding: 20px;
-  max-width: 500px;
-  margin: 20px auto;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-  transition: box-shadow 0.2s ease-in-out;
+    display: inline-block;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 20px;
+    width: 350px;
+    text-align: left;
+    transition: transform 0.3s;
 }
 
 .form-card:hover {
-  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+    transform: translateY(-5px);
 }
 
 .form-card h3 {
-  margin-top: 0;
-  color: #34495e;
+    margin-top: 0;
+    color: #333;
 }
 
 .form-card p {
-  margin: 5px 0;
-  font-size: 15px;
-  line-height: 1.4;
+    margin: 8px 0;
+    font-size: 14px;
+    color: #555;
 }
 
-/* Button */
-.form-card button {
-  background: #3498db;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  margin-top: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  font-size: 14px;
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
 }
 
-.form-card button:hover {
-  background: #2980b9;
-}
-
-/* No forms message */
-p.no-forms {
-  text-align: center;
-  font-size: 18px;
-  color: #777;
-}
-
-/* Responsive tweaks */
-@media (max-width: 600px) {
-  .form-card {
-    margin: 10px;
-    padding: 15px;
-  }
-
-  .form-card button {
-    width: 100%;
-  }
+button:hover {
+    background-color: #2980b9;
 }

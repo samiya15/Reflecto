@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 13, 2025 at 12:05 AM
+-- Generation Time: Jul 13, 2025 at 01:51 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,6 +38,28 @@ CREATE TABLE `all_questions` (
   `question_type` enum('scale','text') NOT NULL,
   `created_by` enum('admin','lecturer') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `all_questions`
+--
+
+INSERT INTO `all_questions` (`question_id`, `form_id`, `question_text`, `question_type`, `created_by`) VALUES
+(1, 2, 'how do you like the course', 'scale', 'admin'),
+(2, 2, 'does class start and end on time', 'scale', 'admin'),
+(3, 2, 'Anything you want to change?', 'text', 'admin'),
+(4, 3, 'how do you like the course', 'scale', 'admin'),
+(5, 3, 'class start and end on time', 'scale', 'admin'),
+(6, 3, 'im happy with the teaching method', 'scale', 'admin'),
+(7, 3, 'Anything you want to change?', 'text', 'admin'),
+(8, 1, 'is the material offered for the course helpful', 'scale', 'admin'),
+(9, 2, 'point of improvement', 'text', 'admin'),
+(10, 2, 'point of improvement', 'text', 'admin'),
+(11, 3, 'is the material offered for the course helpful', 'scale', 'admin'),
+(12, 3, 'any point of change you wish to suggest', 'text', 'admin'),
+(13, 3, 'is the material offered for the course helpful', 'scale', 'admin'),
+(14, 3, 'any point of change you wish to suggest', 'text', 'admin'),
+(15, 3, 'is the material offered for the course helpful', 'scale', 'admin'),
+(16, 3, 'any point of change you wish to suggest', 'text', 'admin');
 
 -- --------------------------------------------------------
 
@@ -283,8 +305,22 @@ CREATE TABLE `form_responses` (
   `question_id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL,
   `response_text` text NOT NULL,
-  `submitted_at` datetime DEFAULT current_timestamp()
+  `submitted_at` datetime DEFAULT current_timestamp(),
+  `unit_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `form_responses`
+--
+
+INSERT INTO `form_responses` (`response_id`, `form_id`, `question_id`, `student_id`, `response_text`, `submitted_at`, `unit_id`) VALUES
+(1, 3, 4, 31, '4', '2025-07-13 14:46:24', 3),
+(2, 3, 5, 31, '5', '2025-07-13 14:46:24', 3),
+(3, 3, 6, 31, '4', '2025-07-13 14:46:24', 3),
+(4, 3, 7, 31, 'no', '2025-07-13 14:46:24', 3),
+(5, 3, 8, 31, '5', '2025-07-13 14:46:24', 3),
+(6, 3, 9, 31, 'none', '2025-07-13 14:46:24', 3),
+(7, 3, 10, 31, 'none', '2025-07-13 14:46:24', 3);
 
 -- --------------------------------------------------------
 
@@ -306,23 +342,23 @@ CREATE TABLE `lecturers` (
   `profile_photo` varchar(255) DEFAULT NULL,
   `verification_status` enum('pending','approved','rejected') DEFAULT 'pending',
   `profile_completed` tinyint(4) NOT NULL DEFAULT 0,
-  `unit_taught` varchar(255) NOT NULL,
-  `unit_id` int(11) NOT NULL
+  `unit_taught` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `lecturers`
 --
 
-INSERT INTO `lecturers` (`lecturer_id`, `user_id`, `first_name`, `last_name`, `email`, `faculty_name`, `course_taught`, `password`, `faculty_id`, `profile_photo`, `verification_status`, `profile_completed`, `unit_taught`, `unit_id`) VALUES
-(1, 17, '', '', '', 'SCES', 'BBIT, ICS, BCOM', '', NULL, NULL, 'approved', 1, '', 1),
-(2, 24, '', '', '', '', 'BCOM, BFS, BBIT, ICS', '', NULL, NULL, 'approved', 1, '', 1),
-(3, 23, '', '', '', '', 'SLS', '', NULL, NULL, 'approved', 1, '', 1),
-(4, 22, '', '', '', '', 'BBSAS, BBSFS, BBIT', '', NULL, NULL, 'approved', 1, '', 1),
-(5, 20, '', '', '', NULL, 'BCOM, BHM, BSc.SDS', '', NULL, NULL, 'approved', 1, '', 1),
-(6, 30, '', '', '', '', 'BCOM, BBIT, BICS', '', NULL, NULL, 'approved', 1, '', 1),
-(7, 29, '', '', '', '', 'BBIT, BCOM', '', NULL, NULL, 'approved', 1, '', 1),
-(8, 33, '', '', '', NULL, NULL, '', NULL, NULL, 'approved', 1, '', 1);
+INSERT INTO `lecturers` (`lecturer_id`, `user_id`, `first_name`, `last_name`, `email`, `faculty_name`, `course_taught`, `password`, `faculty_id`, `profile_photo`, `verification_status`, `profile_completed`, `unit_taught`) VALUES
+(1, 17, '', '', '', 'SCES', 'BBIT, ICS, BCOM', '', NULL, NULL, 'approved', 1, ''),
+(2, 24, '', '', '', '', 'BCOM, BFS, BBIT, ICS', '', NULL, NULL, 'approved', 1, ''),
+(3, 23, '', '', '', '', 'SLS', '', NULL, NULL, 'approved', 1, ''),
+(4, 22, '', '', '', '', 'BBSAS, BBSFS, BBIT', '', NULL, NULL, 'approved', 1, ''),
+(5, 20, '', '', '', NULL, 'BCOM, BHM, BSc.SDS', '', NULL, NULL, 'approved', 1, ''),
+(6, 30, '', '', '', '', 'BCOM, BBIT, BICS', '', NULL, NULL, 'approved', 1, ''),
+(7, 29, '', '', '', '', 'BBIT, BCOM', '', NULL, NULL, 'approved', 1, ''),
+(8, 33, '', '', '', NULL, NULL, '', NULL, NULL, 'approved', 1, ''),
+(10, 35, '', '', '', '', '', '', NULL, NULL, 'approved', 1, '');
 
 -- --------------------------------------------------------
 
@@ -342,7 +378,9 @@ CREATE TABLE `lecturer_courses` (
 
 INSERT INTO `lecturer_courses` (`lecturer_id`, `course_id`) VALUES
 (8, 1),
-(8, 2);
+(8, 2),
+(10, 1),
+(10, 2);
 
 -- --------------------------------------------------------
 
@@ -376,7 +414,9 @@ INSERT INTO `lecturer_faculties` (`lecturer_faculty_id`, `lecturer_id`, `faculty
 (12, 7, 1),
 (13, 7, 2),
 (14, 8, 1),
-(15, 8, 2);
+(15, 8, 2),
+(16, 10, 1),
+(17, 10, 2);
 
 -- --------------------------------------------------------
 
@@ -405,7 +445,10 @@ INSERT INTO `lecturer_feedback_forms` (`id`, `form_id`, `lecturer_id`, `assigned
 (3, 2, 8, 2, 1, 0, '2025-07-12 18:41:11'),
 (4, 3, 8, 2, 2, 0, '2025-07-13 00:13:28'),
 (5, 3, 8, 2, 2, 0, '2025-07-13 00:17:39'),
-(6, 3, 8, 2, 2, 1, '2025-07-13 00:21:27');
+(6, 3, 8, 2, 2, 1, '2025-07-13 00:21:27'),
+(7, 3, 10, 2, 3, 1, '2025-07-13 13:56:53'),
+(8, 3, 8, 2, 2, 1, '2025-07-13 14:07:07'),
+(9, 3, 8, 2, 2, 1, '2025-07-13 14:17:59');
 
 -- --------------------------------------------------------
 
@@ -436,7 +479,8 @@ INSERT INTO `lecturer_form_questions` (`question_id`, `form_id`, `lecturer_id`, 
 (6, 3, 8, 'is the material offered for the course helpful', 'scale', '2025-07-13 00:17:39'),
 (7, 3, 8, 'any point of change you wish to suggest', 'text', '2025-07-13 00:17:39'),
 (8, 3, 8, 'is the material offered for the course helpful', 'scale', '2025-07-13 00:21:27'),
-(9, 3, 8, 'any point of change you wish to suggest', 'text', '2025-07-13 00:21:27');
+(9, 3, 8, 'any point of change you wish to suggest', 'text', '2025-07-13 00:21:27'),
+(10, 3, 8, 'are you happy', 'text', '2025-07-13 14:17:59');
 
 -- --------------------------------------------------------
 
@@ -456,7 +500,9 @@ CREATE TABLE `lecturer_units` (
 
 INSERT INTO `lecturer_units` (`lecturer_id`, `unit_id`) VALUES
 (8, 1),
-(8, 2);
+(8, 2),
+(10, 1),
+(10, 3);
 
 -- --------------------------------------------------------
 
@@ -534,7 +580,7 @@ CREATE TABLE `student_units` (
 --
 
 INSERT INTO `student_units` (`id`, `student_id`, `unit_id`) VALUES
-(3, 8, 2);
+(4, 8, 3);
 
 -- --------------------------------------------------------
 
@@ -564,8 +610,16 @@ CREATE TABLE `submitted_feedback` (
   `id` int(11) NOT NULL,
   `form_id` int(11) DEFAULT NULL,
   `student_id` int(11) DEFAULT NULL,
-  `submitted_at` datetime DEFAULT current_timestamp()
+  `submitted_at` datetime DEFAULT current_timestamp(),
+  `unit_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `submitted_feedback`
+--
+
+INSERT INTO `submitted_feedback` (`id`, `form_id`, `student_id`, `submitted_at`, `unit_id`) VALUES
+(11, 3, 31, '2025-07-13 14:46:24', 3);
 
 -- --------------------------------------------------------
 
@@ -601,7 +655,8 @@ CREATE TABLE `units` (
 
 INSERT INTO `units` (`unit_id`, `unit_name`, `course_id`, `year_of_study`) VALUES
 (1, 'Introduction to Accounting', 1, 1),
-(2, 'AOPP', 2, 2);
+(2, 'AOPP', 2, 2),
+(3, 'Web Development', 2, 2);
 
 -- --------------------------------------------------------
 
@@ -658,7 +713,8 @@ INSERT INTO `users` (`user_id`, `firstName`, `lastName`, `email`, `password`, `r
 (31, 'Samiya', 'Abdullahi', 'sami@gmail.com', '$2y$10$OArrShXLuczZu3yAgXeNQOxB2l3ebWI6e.hu/zwmFnTK9S2SiqSj2', 1, 'approved'),
 (32, 'hayat', 'ali', 'hayat@gmail.com', '$2y$10$/YZeQHHRie72XCeG.UT27e0EpT5zCXNhrihXFQxTJvzeSajqU3aK.', 3, 'approved'),
 (33, 'Saidi', 'Atole', 'atole@gmail.com', '$2y$10$TnRfOeY5VVuyjZuJ9OO6GO/wa72qLLu5cigwL9UbzabETIbFDe5ji', 2, 'approved'),
-(34, 'Jok', 'Ajok', 'ajok@gmail.com', '$2y$10$Rqwf5AmUT7BhLV9GKcSY3epF5QZF7.0J3zwlA1ND2pZisM7Y.z/Oy', 1, 'approved');
+(34, 'Jok', 'Ajok', 'ajok@gmail.com', '$2y$10$Rqwf5AmUT7BhLV9GKcSY3epF5QZF7.0J3zwlA1ND2pZisM7Y.z/Oy', 1, 'approved'),
+(35, 'lec', 'two', 'lec2@gmail.com', '$2y$10$GRUoPbIM7Abc5kEztxAqwOhnLzoYsmdTfYoJjLg0eKg545Y.8hEi6', 2, 'approved');
 
 --
 -- Indexes for dumped tables
@@ -746,15 +802,15 @@ ALTER TABLE `form_responses`
   ADD PRIMARY KEY (`response_id`),
   ADD KEY `form_id` (`form_id`),
   ADD KEY `student_id` (`student_id`),
-  ADD KEY `fk_all_questions` (`question_id`);
+  ADD KEY `fk_all_questions` (`question_id`),
+  ADD KEY `fk_formresponses_unit` (`unit_id`);
 
 --
 -- Indexes for table `lecturers`
 --
 ALTER TABLE `lecturers`
   ADD PRIMARY KEY (`lecturer_id`),
-  ADD KEY `fk_lecturers_faculty` (`faculty_id`),
-  ADD KEY `fk_unit_taught` (`unit_id`);
+  ADD KEY `fk_lecturers_faculty` (`faculty_id`);
 
 --
 -- Indexes for table `lecturer_courses`
@@ -836,7 +892,8 @@ ALTER TABLE `student_updates`
 ALTER TABLE `submitted_feedback`
   ADD PRIMARY KEY (`id`),
   ADD KEY `form_id` (`form_id`),
-  ADD KEY `student_id` (`student_id`);
+  ADD KEY `student_id` (`student_id`),
+  ADD KEY `unit_id` (`unit_id`);
 
 --
 -- Indexes for table `systemadmin`
@@ -867,7 +924,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `all_questions`
 --
 ALTER TABLE `all_questions`
-  MODIFY `question_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `question_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `course`
@@ -927,31 +984,31 @@ ALTER TABLE `feedback_templates`
 -- AUTO_INCREMENT for table `form_responses`
 --
 ALTER TABLE `form_responses`
-  MODIFY `response_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `response_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `lecturers`
 --
 ALTER TABLE `lecturers`
-  MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `lecturer_faculties`
 --
 ALTER TABLE `lecturer_faculties`
-  MODIFY `lecturer_faculty_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `lecturer_faculty_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `lecturer_feedback_forms`
 --
 ALTER TABLE `lecturer_feedback_forms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `lecturer_form_questions`
 --
 ALTER TABLE `lecturer_form_questions`
-  MODIFY `question_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `question_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `students`
@@ -969,7 +1026,7 @@ ALTER TABLE `student_courses`
 -- AUTO_INCREMENT for table `student_units`
 --
 ALTER TABLE `student_units`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `student_updates`
@@ -981,7 +1038,7 @@ ALTER TABLE `student_updates`
 -- AUTO_INCREMENT for table `submitted_feedback`
 --
 ALTER TABLE `submitted_feedback`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `systemadmin`
@@ -993,13 +1050,13 @@ ALTER TABLE `systemadmin`
 -- AUTO_INCREMENT for table `units`
 --
 ALTER TABLE `units`
-  MODIFY `unit_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `unit_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- Constraints for dumped tables
@@ -1065,6 +1122,7 @@ ALTER TABLE `feedback_responses`
 --
 ALTER TABLE `form_responses`
   ADD CONSTRAINT `fk_all_questions` FOREIGN KEY (`question_id`) REFERENCES `all_questions` (`question_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_formresponses_unit` FOREIGN KEY (`unit_id`) REFERENCES `units` (`unit_id`),
   ADD CONSTRAINT `form_responses_ibfk_1` FOREIGN KEY (`form_id`) REFERENCES `feedback_forms` (`form_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `form_responses_ibfk_3` FOREIGN KEY (`student_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
@@ -1072,8 +1130,7 @@ ALTER TABLE `form_responses`
 -- Constraints for table `lecturers`
 --
 ALTER TABLE `lecturers`
-  ADD CONSTRAINT `fk_lecturers_faculty` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_unit_taught` FOREIGN KEY (`unit_id`) REFERENCES `units` (`unit_id`);
+  ADD CONSTRAINT `fk_lecturers_faculty` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `lecturer_courses`
@@ -1148,7 +1205,8 @@ ALTER TABLE `student_updates`
 --
 ALTER TABLE `submitted_feedback`
   ADD CONSTRAINT `submitted_feedback_ibfk_1` FOREIGN KEY (`form_id`) REFERENCES `lecturer_feedback_forms` (`form_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `submitted_feedback_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `submitted_feedback_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `submitted_feedback_ibfk_3` FOREIGN KEY (`unit_id`) REFERENCES `units` (`unit_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `units`
