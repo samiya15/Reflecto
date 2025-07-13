@@ -65,15 +65,11 @@ $admin_data = $admin_result->fetch_assoc();
    <a href="manage_lecturers.php" class="button-link">Approve Lecturers</a>
     </div>
     <div class="card">
-      <h3>Manage Courses</h3><br>
-      <p>Add, edit, or remove courses.</p>
-      <button>Manage Courses</button>
+      <h3>Create Feedback Forms</h3><br>
+      <p>Create and edit feedback forms</p>
+        <a href="create_feedback_form.php" class="button-link">Create forms</a>
     </div>
-    <div class="card">
-  <h3>Upload Feedback Forms</h3><br>
-  <p>Create and assign  feedback forms.</p>
-  <a href="upload_feedback_form.php" class="button-link">Upload Form</a>
-</div>
+   
 
     <div class="card">
       <h3>Reports</h3><br>

@@ -80,7 +80,7 @@ $unitResult = $unitStmt->get_result();
     <h2>Welcome, <?= htmlspecialchars($student['firstName']) ?>!</h2>
   </div>
 
-  <p>Faculty: <?= htmlspecialchars($facultyName) ?> | Course: <?= htmlspecialchars($student['student_course']) ?> | Year: <?= htmlspecialchars($year) ?></p>
+  <p>Faculty: <?= htmlspecialchars($facultyName) ?> | Course: <?= htmlspecialchars($student['course_name']) ?> | Year: <?= htmlspecialchars($year) ?></p>
   <p>Status: <?= htmlspecialchars($student['status']) ?></p>
 
   <div class="cards-container">
@@ -99,7 +99,7 @@ $unitResult = $unitStmt->get_result();
     <!-- Fill Feedback Form -->
     <div class="card">
       <h3>Fill Feedback Form</h3>
-      <a href="feedback_form.php" class="card-btn">Go</a>
+      <a href="student_view_forms.php" class="card-btn">Go</a>
     </div>
 
     <!-- View Lecturer Responses -->

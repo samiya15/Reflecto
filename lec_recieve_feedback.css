@@ -1,0 +1,99 @@
+/* Reset and base styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #f4f7fa, #e8edf1);
+  margin: 0;
+  padding: 40px 20px;
+  color: #2c3e50;
+}
+
+/* Page Title */
+h2 {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 40px;
+  color: #34495e;
+}
+
+/* Feedback form block */
+.form-block {
+  background: #fff;
+  border-left: 5px solid #3498db;
+  padding: 25px 30px;
+  margin: 20px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  max-width: 800px;
+  transition: transform 0.2s ease;
+}
+
+.form-block:hover {
+  transform: scale(1.01);
+}
+
+/* Form title */
+.form-block h3 {
+  margin-top: 0;
+  color: #2980b9;
+  font-size: 24px;
+}
+
+/* Created date */
+.form-block p {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+/* Section title */
+.form-block h4 {
+  font-size: 18px;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+/* Question list */
+.form-block ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 20px;
+}
+
+.form-block ul li {
+  background: #f1f9ff;
+  border: 1px solid #d6eaff;
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-size: 15px;
+  color: #333;
+}
+
+/* Button styling */
+form button {
+  background: #3498db;
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background: #2d80b3;
+}
+
+/* No forms */
+p {
+  text-align: center;
+  font-size: 18px;
+  color: #888;
+  background: #f9f9f9;
+  padding: 30px;
+  max-width: 600px;
+  margin: 40px auto;
+  border-radius: 10px;
+  border: 1px dashed #ccc;
+}
