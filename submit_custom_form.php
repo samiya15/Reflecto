@@ -2,7 +2,6 @@
 session_start();
 include("include/dbconnect.php");
 
-// Ensure lecturer is logged in
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 2) {
     header("Location: signin.php");
     exit();
@@ -10,15 +9,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 2) {
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch lecturer ID
-$stmt = $conn->prepare("SELECT lecturer_id FROM lecturers WHERE user_id = ?");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-$lecturer_id = $row['lecturer_id'];
+// Get lecturer_id
+$lecStmt = $conn->prepare("SELECT lecturer_id FROM lecturers WHERE user_id = ?");
+$lecStmt->bind_param("i", $user_id);
+$lecStmt->execute();
+$lecResult = $lecStmt->get_result();
+$lecRow = $lecResult->fetch_assoc();
+$lecturer_id = $lecRow['lecturer_id'] ?? null;
 
-// Validate and fetch POST data
 $form_id = intval($_POST['form_id']);
 $course_id = intval($_POST['assigned_course_id']);
 $unit_id = intval($_POST['assigned_unit_id']);
@@ -35,21 +33,20 @@ $insertQ = $conn->prepare("INSERT INTO lecturer_form_questions (form_id, lecture
 
 foreach ($questions as $q) {
     $text = trim($q['text']);
-    $type = $q['type'] === 'scale' ? 'scale' : 'text'; // enforce enum values
-
+    $type = $q['type'] === 'scale' ? 'scale' : 'text';
     if (!empty($text)) {
         $insertQ->bind_param("iiss", $form_id, $lecturer_id, $text, $type);
         $insertQ->execute();
     }
 }
 
-// Insert form assignment to course/unit (unpublished by default)
-$insertForm = $conn->prepare(" INSERT INTO lecturer_feedback_forms (form_id, lecturer_id, assigned_course_id, assigned_unit_id, is_published)
-    VALUES (?, ?, ?, ?, 0)
+// Save the form assignment and PUBLISH it (set is_published = 1)
+$insertForm = $conn->prepare("INSERT INTO lecturer_feedback_forms (form_id, lecturer_id, assigned_course_id, assigned_unit_id, is_published)
+    VALUES (?, ?, ?, ?, 1)
 ");
 $insertForm->bind_param("iiii", $form_id, $lecturer_id, $course_id, $unit_id);
 $insertForm->execute();
 
-header("Location: lecdash.php?msg=Form customized successfully");
+header("Location: lecdash.php?msg=Form customized and published successfully");
 exit();
 ?>

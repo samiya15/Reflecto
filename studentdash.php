@@ -90,16 +90,21 @@ $unitResult = $unitStmt->get_result();
       <button id="openProfileBtn">View Profile</button>
     </div>
 
+     <div class="card">
+      <h3>Register Units</h3>
+      <a href="register_units.php" class="card-btn">Register</a>
+    </div>
+
     <!-- Submit Personalized Feedback -->
     <div class="card">
       <h3>Submit Personalized Feedback</h3>
-      <a href="student_feedback.php" class="card-btn">Go</a>
+      <a href="student_feedback.php" class="card-btn">Submit</a>
     </div>
 
     <!-- Fill Feedback Form -->
     <div class="card">
       <h3>Fill Feedback Form</h3>
-      <a href="student_view_forms.php" class="card-btn">Go</a>
+      <a href="student_view_forms.php" class="card-btn">Fill Form</a>
     </div>
 
     <!-- View Lecturer Responses -->

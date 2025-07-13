@@ -36,8 +36,7 @@ $facultyIdsStr = implode(',', array_map('intval', $facultyIds));
 $forms = [];
 
 if (!empty($facultyIdsStr)) {
-    $formQuery = $conn->query("
-        SELECT f.form_id, f.title, f.created_at, f.faculty_id, fa.faculty_name
+    $formQuery = $conn->query("  SELECT f.form_id, f.title, f.created_at, f.faculty_id, fa.faculty_name
         FROM feedback_forms f
         JOIN faculty fa ON f.faculty_id = fa.faculty_id
         WHERE f.faculty_id IN ($facultyIdsStr)
