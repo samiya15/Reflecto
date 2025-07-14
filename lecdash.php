@@ -117,6 +117,12 @@ while ($row = $unitResult->fetch_assoc()) {
     <p>Upload feedback forms to students.</p>
     <button onclick="window.location.href='lecturer_recieve_feedback.php'">View Forms</button>
   </div>
+   <div class="card">
+    <h3>Manage courses and units</h3>
+    <p>Edit or Update your courses and units.</p>
+    <button onclick="window.location.href='lecturer_manage_courses.php'">View Courses</button>
+    <button onclick="window.location.href='lecturer_manage_units.php'">View Units</button>
+  </div>
 
   <div class="card">
     <h3>Status</h3>
