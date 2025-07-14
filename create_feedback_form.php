@@ -11,12 +11,19 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 3) { // assuming role 4
 $user_id = $_SESSION['user_id'];
 
 // Get course admin's faculty ID
-$stmt = $conn->prepare("SELECT faculty_id FROM courseadmin WHERE user_id = ?");
-$stmt->bind_param("i", $user_id);
+$stmt = $conn->prepare("SELECT faculty_id FROM courseadmin WHERE email = ?");
+$stmt->bind_param("s", $_SESSION['email']);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
-$faculty_id = $user['faculty_id'];
+
+if ($user && isset($user['faculty_id'])) {
+    $faculty_id = $user['faculty_id'];
+} else {
+    echo "Faculty not found. Please ensure your profile is complete.";
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>

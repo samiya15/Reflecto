@@ -28,22 +28,22 @@ if ($facultyResult->num_rows > 0) {
 }
 
 // Fetch lecturers with real courses and units
-$stmt = $conn->prepare("
-    SELECT 
+$stmt = $conn->prepare("  SELECT 
         l.lecturer_id, l.verification_status,
         u.firstName, u.lastName, u.email,
         GROUP_CONCAT(DISTINCT c.course_name SEPARATOR ', ') AS courses,
         GROUP_CONCAT(DISTINCT un.unit_name SEPARATOR ', ') AS units
     FROM lecturers l
     JOIN users u ON l.user_id = u.user_id
-    JOIN lecturer_faculties lf ON l.lecturer_id = lf.lecturer_id
-    LEFT JOIN lecturer_courses lc ON l.lecturer_id = lc.lecturer_id
-    LEFT JOIN course c ON lc.course_id = c.course_id
+    JOIN lecturer_courses lc ON l.lecturer_id = lc.lecturer_id
+    JOIN course c ON lc.course_id = c.course_id
+    JOIN faculty f ON c.faculty_id = f.faculty_id
     LEFT JOIN lecturer_units lu ON l.lecturer_id = lu.lecturer_id
     LEFT JOIN units un ON lu.unit_id = un.unit_id
-    WHERE lf.faculty_id = ?
+    WHERE f.faculty_id = ?
     GROUP BY l.lecturer_id
 ");
+
 
 if (!$stmt) {
     echo "Prepare failed: " . $conn->error;

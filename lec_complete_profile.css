@@ -1,89 +1,94 @@
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  background: rgba(0, 0, 0, 0.5);
-}
-
-/* Center the overlay */
+/* Overlay */
 .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 999;
+  font-family: "Segoe UI", sans-serif;
+  animation: fadeIn 0.3s ease;
 }
 
-/* Modal content card */
+/* Modal box */
 .modal-content {
-  background-color: #ffffff;
-  padding: 35px 30px;
+  background-color: #fff;
+  padding: 2rem 2.5rem;
   border-radius: 12px;
-  width: 420px;
-  max-width: 90%;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.modal-content h2 {
-  margin-top: 0;
-  font-size: 22px;
-  color: #333;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.4s ease;
   text-align: center;
-  margin-bottom: 25px;
 }
 
+/* Headings */
+.modal-content h2 {
+  margin-bottom: 1.2rem;
+  font-size: 1.6rem;
+  color: #333;
+}
+
+/* Input group */
 .input-group {
-  margin-bottom: 20px;
+  margin-bottom: 1.2rem;
+  text-align: left;
 }
 
 .input-group label {
   display: block;
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: #333;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #444;
 }
 
-.input-group input,
-.input-group select,
-.input-group textarea {
+.input-group select {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 15px;
-  transition: border-color 0.2s;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s;
 }
 
-.input-group input:focus,
-.input-group select:focus,
-.input-group textarea:focus {
-  border-color: #4CAF50;
+.input-group select:focus {
   outline: none;
+  border-color: #007BFF;
+  background-color: #fff;
 }
 
-button {
-  background-color: #4CAF50;
+/* Submit button */
+button[type="submit"] {
+  background-color: #007BFF;
   color: white;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
   border: none;
-  padding: 12px 20px;
-  border-radius: 6px;
-  font-size: 16px;
+  border-radius: 8px;
   cursor: pointer;
-  display: block;
-  width: 100%;
-  margin-top: 10px;
-  transition: background 0.3s;
+  transition: background-color 0.3s;
+  margin-top: 0.5rem;
 }
 
-button:hover {
-  background-color: #3e9144;
+button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }

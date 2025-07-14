@@ -66,14 +66,14 @@ $admin_data = $admin_result->fetch_assoc();
     </div>
     <div class="card">
       <h3>Create Feedback Forms</h3><br>
-      <p>Create and edit feedback forms</p>
+      <p>Create and edit feedback forms</p><br>
         <a href="create_feedback_form.php" class="button-link">Create forms</a>
     </div>
    
 
     <div class="card">
       <h3>Reports</h3><br>
-      <p>Generate and download activity reports.</p>
+      <p>Generate and download activity reports.</p><br>
        <a href="courseadmin_view_summaries.php" class="button-link">View Reports</a>
     </div>
   </div>
